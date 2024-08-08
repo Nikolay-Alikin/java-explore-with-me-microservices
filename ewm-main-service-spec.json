@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "description": "Documentation \"Explore With Me\" API v1.0",
-    "title": "\"Explore With Me\" API сервер",
+    "description": "Documentation Explore With Me API v1.0",
+    "title": "Explore With Me API сервер",
     "version": "1.0"
   },
   "servers": [

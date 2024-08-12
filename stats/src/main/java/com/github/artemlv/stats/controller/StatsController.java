@@ -17,7 +17,6 @@ import java.util.List;
 public class StatsController implements StatsApi, HitApi {
     private final StatService service;
 
-
     @Override
     public ResponseEntity<Void> hit(EndpointHit endpointHit) {
         return service.hit(endpointHit);

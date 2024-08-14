@@ -2,7 +2,7 @@ package com.github.artemlv.ewm.exception.type;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(final String entityType, final long id) {
-        super(String.format("Object %s by id - %s not found", entityType, id));
+        super(String.format("Object %s by id - %d not found", entityType, id));
     }
 
     public NotFoundException(String message) {

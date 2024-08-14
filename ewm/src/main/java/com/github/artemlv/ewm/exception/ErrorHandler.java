@@ -15,7 +15,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleServerException(Throwable e) {
+    public ErrorResponse handleServerException(final Throwable e) {
         final ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .reason(HttpStatus.BAD_REQUEST.getReasonPhrase())

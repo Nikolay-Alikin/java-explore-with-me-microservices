@@ -1,7 +1,7 @@
 services:
   stats:
     image: stats:latest
-    build: stats
+    build: stats/server
     restart: "no"
     ports:
       - "9090:9090"

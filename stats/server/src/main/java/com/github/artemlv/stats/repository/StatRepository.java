@@ -1,11 +1,11 @@
 package com.github.artemlv.stats.repository;
 
+import dto.EndpointHit;
+import dto.ViewStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.generated.model.dto.EndpointHit;
-import ru.yandex.practicum.generated.model.dto.ViewStats;
 
 import java.time.LocalDateTime;
 import java.util.List;

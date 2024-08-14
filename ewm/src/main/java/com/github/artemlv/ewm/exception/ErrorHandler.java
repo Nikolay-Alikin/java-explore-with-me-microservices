@@ -14,16 +14,16 @@ import java.time.LocalDateTime;
 public class ErrorHandler {
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleServerException(final Throwable e) {
         final ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST)
-                .reason(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .reason(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        log.error(errorResponse.toString());
+        log.error(errorResponse.toString(), e);
 
         return errorResponse;
     }

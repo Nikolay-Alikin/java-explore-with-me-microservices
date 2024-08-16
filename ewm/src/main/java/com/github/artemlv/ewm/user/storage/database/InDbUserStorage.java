@@ -38,7 +38,7 @@ public class InDbUserStorage implements UserStorage {
 
     @Override
     public List<User> getAll(final List<Long> ids, final int from, final int size) {
-        final PageRequest pageRequest = PageRequest.of(from / size, size);
+        final PageRequest pageRequest = PageRequest.of(from, size);
 
         final List<User> users = ObjectUtils.isEmpty(ids) ? userRepository
                 .findAll(pageRequest)

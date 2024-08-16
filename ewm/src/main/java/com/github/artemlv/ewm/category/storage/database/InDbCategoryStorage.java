@@ -37,7 +37,7 @@ public class InDbCategoryStorage implements CategoryStorage {
 
     @Override
     public List<Category> getAll(final int from, final int size) {
-        final List<Category> categories = categoryRepository.findAll(PageRequest.of(from / size, size))
+        final List<Category> categories = categoryRepository.findAll(PageRequest.of(from, size))
                 .getContent();
 
         log.debug("Getting {} from - {} size - {}", SIMPLE_NAME, from, size);

@@ -1,6 +1,7 @@
 package com.github.artemlv.ewm.exception;
 
 import com.github.artemlv.ewm.exception.model.ErrorResponse;
+import com.github.artemlv.ewm.exception.type.ConflictException;
 import com.github.artemlv.ewm.exception.type.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,21 @@ public class ErrorHandler {
         final ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.NOT_FOUND)
                 .reason(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        log.warn(errorResponse.toString(), e);
+
+        return errorResponse;
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleNotFoundException(final ConflictException e) {
+        final ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT)
+                .reason(HttpStatus.CONFLICT.getReasonPhrase())
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();

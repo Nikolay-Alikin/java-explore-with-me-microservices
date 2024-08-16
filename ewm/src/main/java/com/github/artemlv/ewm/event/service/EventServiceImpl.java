@@ -127,6 +127,7 @@ public class EventServiceImpl implements EventService {
         event.setInitiator(user);
         event.setCategory(category);
         event.setLocation(location);
+        event.setRequestModeration(true);
 
         return cs.convert(eventStorage.save(event), EventDto.class);
     }

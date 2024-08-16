@@ -4,8 +4,10 @@ import com.github.artemlv.ewm.event.validation.EventStartDateBeforeEndDate;
 import com.github.artemlv.ewm.state.State;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -13,6 +15,8 @@ import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EventStartDateBeforeEndDate
 public class AdminParameter {
     private List<Long> users;

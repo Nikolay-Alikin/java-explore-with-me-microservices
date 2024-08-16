@@ -31,7 +31,7 @@ public class InDbLocationStorage implements LocationStorage {
     @Override
     public Optional<Location> findByLatAndLon(final double lat, final double lon) {
         final Optional<Location> location = locationRepository.findByLatAndLon(lat, lon);
-        log.debug("Get Optional<{}> by lat and lon - {}", SIMPLE_NAME, lat, lon);
+        log.debug("Get Optional<{}> by lat and lon - {}, {}", SIMPLE_NAME, lat, lon);
         return location;
     }
 
@@ -63,8 +63,8 @@ public class InDbLocationStorage implements LocationStorage {
 
     @Override
     public List<Location> findAllByNameContainingIgnoreCase(final String text, final int from, final int size) {
-        final List<Location> locations = locationRepository.
-                findAllByNameContainingIgnoreCase(text, PageRequest.of(from, size));
+        final List<Location> locations = locationRepository
+                .findAllByNameContainingIgnoreCase(text, PageRequest.of(from, size));
         log.debug("Getting {} text - {} from - {} size - {}", SIMPLE_NAME, text, from, size);
         return locations;
     }

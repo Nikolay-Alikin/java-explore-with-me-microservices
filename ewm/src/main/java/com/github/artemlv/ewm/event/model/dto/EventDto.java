@@ -2,6 +2,7 @@ package com.github.artemlv.ewm.event.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.artemlv.ewm.category.model.Category;
+import com.github.artemlv.ewm.category.model.dto.CategoryDto;
 import com.github.artemlv.ewm.location.model.dto.LocationLatAndLonDto;
 import com.github.artemlv.ewm.state.State;
 import com.github.artemlv.ewm.user.model.dto.UserWithoutEmailDto;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 public record EventDto(
         long id,
         String annotation,
-        Category category,
+        CategoryDto category,
         int confirmedRequests,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime createdOn,

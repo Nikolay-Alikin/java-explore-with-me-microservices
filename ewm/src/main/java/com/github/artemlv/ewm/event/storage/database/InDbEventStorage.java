@@ -24,14 +24,14 @@ public class InDbEventStorage implements EventStorage {
     @Override
     public List<Event> findAll(final BooleanExpression predicate, final PageRequest pageRequest) {
         final List<Event> events = eventRepository.findAll(predicate, pageRequest).stream().toList();
-        log.debug("Getting all {} : {}", SIMPLE_NAME, events);
+        log.info("Getting all {} : {}", SIMPLE_NAME, events);
         return events;
     }
 
     @Override
     public Optional<Event> getById(final long id) {
         final Optional<Event> event = eventRepository.findById(id);
-        log.debug("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
+        log.info("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
         return event;
     }
 
@@ -43,21 +43,21 @@ public class InDbEventStorage implements EventStorage {
     @Override
     public List<Event> findAllByInitiatorId(final long userId, final PageRequest pageRequest) {
         final List<Event> events = eventRepository.findByInitiatorId(userId, pageRequest);
-        log.debug("Getting all by initiator {} : {}", SIMPLE_NAME, events);
+        log.info("Getting all by initiator {} : {}", SIMPLE_NAME, events);
         return events;
     }
 
     @Override
     public List<Event> findAllEventsByLocation(final double lat, final double lon) {
         final List<Event> locations = eventRepository.findByLocationLatAndLocationLon(lat, lon);
-        log.debug("Getting a list of events by location coordinates - {}, {}, {}", SIMPLE_NAME, lat, lon);
+        log.info("Getting a list of events by location coordinates - {}, {}, {}", SIMPLE_NAME, lat, lon);
         return locations;
     }
 
     @Override
     public List<Event> findAllByLocationAndRadius(final double lat, final double lon, final double radius) {
         final List<Event> locations = eventRepository.findByLocationLatAndLocationLonAndLocationRadius(lat, lon, radius);
-        log.debug("Getting a list of events by location coordinates - {}, {}, {}, {}", SIMPLE_NAME, lat, lon, radius);
+        log.info("Getting a list of events by location coordinates - {}, {}, {}, {}", SIMPLE_NAME, lat, lon, radius);
         return locations;
     }
 
@@ -65,7 +65,7 @@ public class InDbEventStorage implements EventStorage {
     @Transactional
     public Event save(Event event) {
         final Event eventInStorage = eventRepository.save(event);
-        log.debug("Save {} - {}", SIMPLE_NAME, eventInStorage);
+        log.info("Save {} - {}", SIMPLE_NAME, eventInStorage);
         return eventInStorage;
     }
 }

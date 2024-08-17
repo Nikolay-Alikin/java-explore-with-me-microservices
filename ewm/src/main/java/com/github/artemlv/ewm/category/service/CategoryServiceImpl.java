@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto update(final CreateCategoryDto createCategoryDto, final long id) {
         Category category = categoryStorage.getByIdOrElseThrow(id);
         category.setName(createCategoryDto.name());
-        log.debug("Update category - {}", category);
+        log.info("Update category - {}", category);
 
         return cs.convert(categoryStorage.save(category), CategoryDto.class);
     }

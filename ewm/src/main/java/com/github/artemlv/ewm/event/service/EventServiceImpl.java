@@ -12,8 +12,8 @@ import com.github.artemlv.ewm.exception.type.ConflictException;
 import com.github.artemlv.ewm.exception.type.NotFoundException;
 import com.github.artemlv.ewm.location.model.Location;
 import com.github.artemlv.ewm.location.service.LocationService;
-import com.github.artemlv.ewm.request.model.dto.UpdateRequestByIdsDto;
 import com.github.artemlv.ewm.request.model.dto.RequestDto;
+import com.github.artemlv.ewm.request.model.dto.UpdateRequestByIdsDto;
 import com.github.artemlv.ewm.state.State;
 import com.github.artemlv.ewm.user.model.User;
 import com.github.artemlv.ewm.user.storage.UserStorage;
@@ -109,7 +109,8 @@ public class EventServiceImpl implements EventService {
                     locationService.getByCoordinatesOrElseCreate(updateEventDto.location()), Location.class)
             );
         }
-        if (!ObjectUtils.isEmpty(updateEventDto.category())) {
+
+        if (updateEventDto.category() != 0) {
             event.setCategory(categoryStorage.getByIdOrElseThrow(updateEventDto.category()));
         }
 
@@ -135,6 +136,7 @@ public class EventServiceImpl implements EventService {
         event.setCategory(category);
         event.setLocation(location);
         event.setCreatedOn(LocalDateTime.now());
+        event.setRequestModeration(true);
         event.setState(State.PENDING);
 
         return cs.convert(eventStorage.save(event), EventDto.class);

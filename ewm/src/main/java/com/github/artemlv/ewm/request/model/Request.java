@@ -1,7 +1,7 @@
 package com.github.artemlv.ewm.request.model;
 
-import com.github.artemlv.ewm.state.State;
 import com.github.artemlv.ewm.event.model.Event;
+import com.github.artemlv.ewm.state.State;
 import com.github.artemlv.ewm.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;

@@ -26,14 +26,14 @@ public class PublicEventController {
 
     @GetMapping("/{eventId}")
     public EventDto getById(@PathVariable @Positive final long eventId, final HttpServletRequest request) {
-        log.debug("Public event {} by id - {}", SIMPLE_NAME, eventId);
+        log.info("Public event {} by id - {}", SIMPLE_NAME, eventId);
         return eventService.getById(eventId, request);
     }
 
     @GetMapping
     public List<EventDto> getAll(@Valid final AdminParameter adminParameter,
                                  final HttpServletRequest request) {
-        log.debug("Public {} request with parameters - {}", SIMPLE_NAME, adminParameter);
+        log.info("Public {} request with parameters - {}", SIMPLE_NAME, adminParameter);
         return eventService.getAll(adminParameter, request);
     }
 
@@ -41,7 +41,7 @@ public class PublicEventController {
     public List<EventDto> getEventsByLatAndLon(@RequestParam @NotNull final Double lat,
                                                @RequestParam @NotNull final Double lon,
                                                @RequestParam(required = false) final Double radius) {
-        log.debug("Public {} to receive events by location and radius - {} - {} - {}", SIMPLE_NAME, lat, lon, radius);
+        log.info("Public {} to receive events by location and radius - {} - {} - {}", SIMPLE_NAME, lat, lon, radius);
         return eventService.getAllByLocation(lat, lon, radius);
     }
 }

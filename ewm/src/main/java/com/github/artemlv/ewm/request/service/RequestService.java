@@ -1,7 +1,6 @@
 package com.github.artemlv.ewm.request.service;
 
 import com.github.artemlv.ewm.request.model.dto.RequestDto;
-import jakarta.validation.constraints.Positive;
 
 import java.util.List;
 

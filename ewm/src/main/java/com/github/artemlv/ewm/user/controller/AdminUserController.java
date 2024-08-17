@@ -27,7 +27,7 @@ public class AdminUserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@Valid @RequestBody final CreateUserDto createUserDto) {
-        log.debug("Request to create a {} - {}", SIMPLE_NAME, createUserDto);
+        log.info("Request to create a {} - {}", SIMPLE_NAME, createUserDto);
         return userService.create(createUserDto);
     }
 
@@ -35,14 +35,14 @@ public class AdminUserController {
     public List<UserDto> getAll(@RequestParam(required = false) final List<Long> ids,
                                 @RequestParam(defaultValue = "0") @PositiveOrZero final int from,
                                 @RequestParam(defaultValue = "10") @Positive final int size) {
-        log.debug("Request for all {} beginning - {} size - {}", SIMPLE_NAME, from, size);
+        log.info("Request for all {} beginning - {} size - {}", SIMPLE_NAME, from, size);
         return userService.getAll(ids, from, size);
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable @Positive final long userId) {
-        log.debug("Request to delete a {} by id - {}", SIMPLE_NAME, userId);
+        log.info("Request to delete a {} by id - {}", SIMPLE_NAME, userId);
         userService.deleteById(userId);
     }
 }

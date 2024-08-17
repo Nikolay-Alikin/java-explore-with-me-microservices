@@ -24,21 +24,21 @@ public class InDbLocationStorage implements LocationStorage {
     @Transactional
     public Location save(Location location) {
         final Location savedLocation = locationRepository.save(location);
-        log.debug("Save {} - {}", SIMPLE_NAME, savedLocation);
+        log.info("Save {} - {}", SIMPLE_NAME, savedLocation);
         return savedLocation;
     }
 
     @Override
     public Optional<Location> findByLatAndLon(final double lat, final double lon) {
         final Optional<Location> location = locationRepository.findByLatAndLon(lat, lon);
-        log.debug("Get Optional<{}> by lat and lon - {}, {}", SIMPLE_NAME, lat, lon);
+        log.info("Get Optional<{}> by lat and lon - {}, {}", SIMPLE_NAME, lat, lon);
         return location;
     }
 
     @Override
     public Optional<Location> findById(final long id) {
         final Optional<Location> location = locationRepository.findById(id);
-        log.debug("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
+        log.info("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
         return location;
     }
 
@@ -58,14 +58,14 @@ public class InDbLocationStorage implements LocationStorage {
     @Transactional
     public void deleteById(final long id) {
         locationRepository.deleteById(id);
-        log.debug("Delete {} by id - {}", SIMPLE_NAME, id);
+        log.info("Delete {} by id - {}", SIMPLE_NAME, id);
     }
 
     @Override
     public List<Location> findAllByNameContainingIgnoreCase(final String text, final int from, final int size) {
         final List<Location> locations = locationRepository
                 .findAllByNameContainingIgnoreCase(text, PageRequest.of(from, size));
-        log.debug("Getting {} text - {} from - {} size - {}", SIMPLE_NAME, text, from, size);
+        log.info("Getting {} text - {} from - {} size - {}", SIMPLE_NAME, text, from, size);
         return locations;
     }
 }

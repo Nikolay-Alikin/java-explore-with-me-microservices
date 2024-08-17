@@ -25,14 +25,14 @@ public class AdminEventController {
 
     @GetMapping
     public List<EventDto> getAll(@Valid final AdminParameter adminParameter) {
-        log.debug("Administrator's request to provide {} by parameters - {}", SIMPLE_NAME, adminParameter);
+        log.info("Administrator's request to provide {} by parameters - {}", SIMPLE_NAME, adminParameter);
         return eventService.getAllByAdmin(adminParameter);
     }
 
     @PatchMapping("/{eventId}")
     public EventDto update(@RequestBody @Valid final UpdateEventDto updateEventDto,
                            @PathVariable @Positive final long eventId) {
-        log.debug("Request by the administrator to change an {} by id - {} - {}", SIMPLE_NAME, eventId, updateEventDto);
+        log.info("Request by the administrator to change an {} by id - {} - {}", SIMPLE_NAME, eventId, updateEventDto);
         return eventService.updateByIdAdmin(eventId, updateEventDto);
     }
 }

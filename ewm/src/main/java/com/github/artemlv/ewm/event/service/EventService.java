@@ -4,8 +4,8 @@ import com.github.artemlv.ewm.event.model.AdminParameter;
 import com.github.artemlv.ewm.event.model.dto.CreateEventDto;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
 import com.github.artemlv.ewm.event.model.dto.UpdateEventDto;
-import com.github.artemlv.ewm.request.model.dto.UpdateRequestByIdsDto;
 import com.github.artemlv.ewm.request.model.dto.RequestDto;
+import com.github.artemlv.ewm.request.model.dto.UpdateRequestByIdsDto;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;

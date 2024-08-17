@@ -25,7 +25,7 @@ public class InDbUserStorage implements UserStorage {
     @Transactional
     public User save(User user) {
         final User userInStorage = userRepository.save(user);
-        log.debug("Save {} - {}", SIMPLE_NAME, userInStorage);
+        log.info("Save {} - {}", SIMPLE_NAME, userInStorage);
         return userInStorage;
     }
 
@@ -33,7 +33,7 @@ public class InDbUserStorage implements UserStorage {
     @Transactional
     public void deleteById(final long id) {
         userRepository.deleteById(id);
-        log.debug("Delete {} by id - {}", SIMPLE_NAME, id);
+        log.info("Delete {} by id - {}", SIMPLE_NAME, id);
     }
 
     @Override
@@ -44,14 +44,14 @@ public class InDbUserStorage implements UserStorage {
                 .findAll(pageRequest)
                 .getContent() : userRepository.findAllByIdIn(ids, pageRequest);
 
-        log.debug("Getting {} from - {} size - {}", SIMPLE_NAME, from, size);
+        log.info("Getting {} from - {} size - {}", SIMPLE_NAME, from, size);
         return users;
     }
 
     @Override
     public Optional<User> getById(final long id) {
         final Optional<User> category = userRepository.findById(id);
-        log.debug("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
+        log.info("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
         return category;
     }
 

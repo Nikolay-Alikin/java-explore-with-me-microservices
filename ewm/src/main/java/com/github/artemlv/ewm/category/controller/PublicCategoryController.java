@@ -24,14 +24,14 @@ public class PublicCategoryController {
     @GetMapping
     public List<CategoryDto> getAll(@RequestParam(defaultValue = "0") @PositiveOrZero final int from,
                                     @RequestParam(defaultValue = "10") @Positive final int size) {
-        log.debug("Request for all {} beginning - {} size - {}", SIMPLE_NAME, from, size);
+        log.info("Request for all {} beginning - {} size - {}", SIMPLE_NAME, from, size);
 
         return categoryService.getAll(from, size);
     }
 
     @GetMapping("/{catId}")
     public CategoryDto getById(@PathVariable @Positive long catId) {
-        log.debug("Request to get a {} by id - {}", SIMPLE_NAME, catId);
+        log.info("Request to get a {} by id - {}", SIMPLE_NAME, catId);
 
         return categoryService.getById(catId);
     }

@@ -24,7 +24,7 @@ public class AdminCategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto create(@Valid @RequestBody CreateCategoryDto createCategoryDto) {
-        log.debug("Request to create a {} - {}", SIMPLE_NAME, createCategoryDto);
+        log.info("Request to create a {} - {}", SIMPLE_NAME, createCategoryDto);
 
         return categoryService.create(createCategoryDto);
     }
@@ -32,7 +32,7 @@ public class AdminCategoryController {
     @PatchMapping("/{catId}")
     public CategoryDto update(@PathVariable @Positive long catId,
                               @Valid @RequestBody CreateCategoryDto createCategoryDto) {
-        log.debug("Request to update {} - {} by id - {}", SIMPLE_NAME, createCategoryDto, catId);
+        log.info("Request to update {} - {} by id - {}", SIMPLE_NAME, createCategoryDto, catId);
 
         return categoryService.update(createCategoryDto, catId);
     }
@@ -40,7 +40,7 @@ public class AdminCategoryController {
     @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable @Positive long catId) {
-        log.debug("Request to delete a {} by id - {}", SIMPLE_NAME, catId);
+        log.info("Request to delete a {} by id - {}", SIMPLE_NAME, catId);
         categoryService.deleteById(catId);
     }
 }

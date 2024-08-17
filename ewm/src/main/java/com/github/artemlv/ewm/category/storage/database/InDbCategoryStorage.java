@@ -24,7 +24,7 @@ public class InDbCategoryStorage implements CategoryStorage {
     @Transactional
     public Category save(Category category) {
         final Category categoryInStorage = categoryRepository.save(category);
-        log.debug("Save {} - {}", SIMPLE_NAME, categoryInStorage);
+        log.info("Save {} - {}", SIMPLE_NAME, categoryInStorage);
         return categoryInStorage;
     }
 
@@ -32,7 +32,7 @@ public class InDbCategoryStorage implements CategoryStorage {
     @Transactional
     public void deleteById(final long id) {
         categoryRepository.deleteById(id);
-        log.debug("Delete {} by id - {}", SIMPLE_NAME, id);
+        log.info("Delete {} by id - {}", SIMPLE_NAME, id);
     }
 
     @Override
@@ -40,14 +40,14 @@ public class InDbCategoryStorage implements CategoryStorage {
         final List<Category> categories = categoryRepository.findAll(PageRequest.of(from, size))
                 .getContent();
 
-        log.debug("Getting {} from - {} size - {}", SIMPLE_NAME, from, size);
+        log.info("Getting {} from - {} size - {}", SIMPLE_NAME, from, size);
         return categories;
     }
 
     @Override
     public Optional<Category> getById(final long id) {
         final Optional<Category> category = categoryRepository.findById(id);
-        log.debug("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
+        log.info("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
         return category;
     }
 

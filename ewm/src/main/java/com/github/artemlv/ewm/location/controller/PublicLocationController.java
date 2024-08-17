@@ -26,7 +26,7 @@ public class PublicLocationController {
     public List<LocationDto> getLocations(@RequestParam(required = false) final String text,
                                           @RequestParam(defaultValue = "0") final int from,
                                           @RequestParam(defaultValue = "10") final int size) {
-        log.debug("Public {} for all locations by text - {} beginning - {} size - {}", SIMPLE_NAME, text, from, size);
+        log.info("Public {} for all locations by text - {} beginning - {} size - {}", SIMPLE_NAME, text, from, size);
         return locationService.getAll(text, from, size);
     }
 }

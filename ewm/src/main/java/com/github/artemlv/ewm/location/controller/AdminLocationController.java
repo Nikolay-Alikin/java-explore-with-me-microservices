@@ -26,27 +26,27 @@ public class AdminLocationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LocationDto createLocation(@RequestBody @Valid CreateLocationDto createLocationDto) {
-        log.debug("Request to create a {} - {}", SIMPLE_NAME, createLocationDto);
+        log.info("Request to create a {} - {}", SIMPLE_NAME, createLocationDto);
         return locationService.create(createLocationDto);
     }
 
     @GetMapping("/{locId}")
     public LocationDto getLocationById(@PathVariable @Positive final long locId) {
-        log.debug("Request to obtain a {} by id - {}", SIMPLE_NAME, locId);
+        log.info("Request to obtain a {} by id - {}", SIMPLE_NAME, locId);
         return locationService.getById(locId);
     }
 
     @PatchMapping("/{locId}")
     public LocationDto updateLocation(@RequestBody final UpdateLocationDto updateLocationDto,
                                       @PathVariable @Positive final long locId) {
-        log.debug("Request to update {} by id - {} - {}", SIMPLE_NAME, locId, updateLocationDto);
+        log.info("Request to update {} by id - {} - {}", SIMPLE_NAME, locId, updateLocationDto);
         return locationService.updateById(locId, updateLocationDto);
     }
 
     @DeleteMapping("/{locId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteLocationById(@PathVariable final long locId) {
-        log.debug("Request to delete a {} by id - {}", SIMPLE_NAME, locId);
+        log.info("Request to delete a {} by id - {}", SIMPLE_NAME, locId);
         locationService.deleteById(locId);
     }
 }

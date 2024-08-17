@@ -1,8 +1,6 @@
 package com.github.artemlv.ewm.request.storage.database;
 
 
-import com.github.artemlv.ewm.event.model.Event;
-import com.github.artemlv.ewm.event.storage.database.EventRepository;
 import com.github.artemlv.ewm.exception.type.NotFoundException;
 import com.github.artemlv.ewm.request.model.Request;
 import com.github.artemlv.ewm.request.storage.RequestStorage;
@@ -26,7 +24,7 @@ public class InDbRequestStorage implements RequestStorage {
     @Override
     public int countByEventIdAndStatus(final long id, final State state) {
         final int count = requestRepository.countByEventIdAndStatus(id, state);
-        log.debug("countByEventIdAndStatus count: {}", count);
+        log.info("countByEventIdAndStatus count: {}", count);
         return count;
     }
 
@@ -34,21 +32,21 @@ public class InDbRequestStorage implements RequestStorage {
     @Transactional
     public Request save(Request request) {
         final Request requestInStorage = requestRepository.save(request);
-        log.debug("Save {} - {}", SIMPLE_NAME, requestInStorage);
+        log.info("Save {} - {}", SIMPLE_NAME, requestInStorage);
         return requestInStorage;
     }
 
     @Override
     public List<Request> findAllByRequesterId(final long userId) {
         List<Request> requests = requestRepository.findAllByRequesterId(userId);
-        log.debug("Getting all {} : {}", SIMPLE_NAME, requests);
+        log.info("Getting all {} : {}", SIMPLE_NAME, requests);
         return requests;
     }
 
     @Override
     public Optional<Request> getById(final long id) {
         final Optional<Request> request = requestRepository.findById(id);
-        log.debug("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
+        log.info("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
         return request;
     }
 

@@ -4,8 +4,8 @@ import com.github.artemlv.ewm.event.model.Event;
 import com.github.artemlv.ewm.event.model.dto.CreateEventDto;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
 import com.github.artemlv.ewm.event.service.EventService;
-import com.github.artemlv.ewm.request.model.dto.UpdateRequestByIdsDto;
 import com.github.artemlv.ewm.request.model.dto.RequestDto;
+import com.github.artemlv.ewm.request.model.dto.UpdateRequestByIdsDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -31,7 +31,7 @@ public class PrivateEventController {
     @ResponseStatus(HttpStatus.CREATED)
     public EventDto create(@RequestBody @Valid final CreateEventDto createEventDto,
                            @PathVariable @Positive final long userId) {
-        log.debug("Request to create an {} - {}", SIMPLE_NAME, createEventDto);
+        log.info("Request to create an {} - {}", SIMPLE_NAME, createEventDto);
         return eventService.create(createEventDto, userId);
     }
 
@@ -39,21 +39,21 @@ public class PrivateEventController {
     public List<EventDto> getAllByUserId(@PathVariable @Positive final long userId,
                                          @RequestParam(defaultValue = "0") @PositiveOrZero final int from,
                                          @RequestParam(defaultValue = "10") @Positive final int size) {
-        log.debug("Request for user {} by id - {} start - {} size - {}", SIMPLE_NAME, userId, from, size);
+        log.info("Request for user {} by id - {} start - {} size - {}", SIMPLE_NAME, userId, from, size);
         return eventService.getAllByUserId(userId, from, size);
     }
 
     @GetMapping("/{eventId}")
     public EventDto getByIdAndUserId(@PathVariable @Positive final long userId,
                                      @PathVariable @Positive final long eventId) {
-        log.debug("{} request by id - {} by user with id - {}", SIMPLE_NAME, eventId, userId);
+        log.info("{} request by id - {} by user with id - {}", SIMPLE_NAME, eventId, userId);
         return eventService.getByIdAndUserId(eventId, userId);
     }
 
     @GetMapping("/{eventId}/requests")
     public List<RequestDto> getRequestsByUserIdAndEventId(@PathVariable @Positive final long userId,
                                                           @PathVariable @Positive final long eventId) {
-        log.debug("Request to receive requests for participation in an {} by id - {} by user by id - {}",
+        log.info("Request to receive requests for participation in an {} by id - {} by user by id - {}",
                 SIMPLE_NAME, eventId, userId);
         return eventService.getRequestsByUserIdAndEventId(userId, eventId);
     }
@@ -63,7 +63,7 @@ public class PrivateEventController {
             @RequestBody final UpdateRequestByIdsDto updateEventStatusByRequestIds,
             @PathVariable @Positive final long userId,
             @PathVariable @Positive final long eventId) {
-        log.debug("Request to update the status of requests for an {} by id - {} by user with id - {} - {}",
+        log.info("Request to update the status of requests for an {} by id - {} by user with id - {} - {}",
                 SIMPLE_NAME, eventId, userId, updateEventStatusByRequestIds);
         return eventService.updateRequestsStatusByUserIdAndEventId(userId, eventId, updateEventStatusByRequestIds);
     }

@@ -12,7 +12,7 @@ import com.github.artemlv.ewm.exception.type.ConflictException;
 import com.github.artemlv.ewm.exception.type.NotFoundException;
 import com.github.artemlv.ewm.location.model.Location;
 import com.github.artemlv.ewm.location.service.LocationService;
-import com.github.artemlv.ewm.request.model.UpdateRequestByIdsDto;
+import com.github.artemlv.ewm.request.model.dto.UpdateRequestByIdsDto;
 import com.github.artemlv.ewm.request.model.dto.RequestDto;
 import com.github.artemlv.ewm.state.State;
 import com.github.artemlv.ewm.user.model.User;
@@ -72,6 +72,13 @@ public class EventServiceImpl implements EventService {
             predicate = predicate.and(event.createdOn.before(adminParameter.getRangeEnd()));
         }
 
+        if (ObjectUtils.isEmpty(adminParameter.getRangeStart())) {
+            adminParameter.setRangeStart(LocalDateTime.now().minusDays(3));
+        }
+        if (ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
+            adminParameter.setRangeEnd(LocalDateTime.now().plusDays(3));
+        }
+
         return eventStorage.findAll(predicate, PageRequest.of(adminParameter.getFrom() / adminParameter.getSize(),
                         adminParameter.getSize())).stream()
                 .map(event -> cs.convert(event, EventDto.class))
@@ -127,7 +134,8 @@ public class EventServiceImpl implements EventService {
         event.setInitiator(user);
         event.setCategory(category);
         event.setLocation(location);
-        event.setRequestModeration(true);
+        event.setCreatedOn(LocalDateTime.now());
+        event.setState(State.PENDING);
 
         return cs.convert(eventStorage.save(event), EventDto.class);
     }
@@ -135,7 +143,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDto> getAllByUserId(final long userId, final int from, final int size) {
         userStorage.existsByIdOrElseThrow(userId);
-        return eventStorage.findAllByInitiatorId(userId, PageRequest.of(from / size, size)).stream()
+        return eventStorage.findAllByInitiatorId(userId, PageRequest.of(from, size)).stream()
                 .map(event -> cs.convert(event, EventDto.class))
                 .toList();
     }
@@ -195,6 +203,13 @@ public class EventServiceImpl implements EventService {
             predicate = predicate.and(event.createdOn.after(adminParameter.getRangeStart()));
         } else if (!ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
             predicate = predicate.and(event.createdOn.before(adminParameter.getRangeEnd()));
+        }
+
+        if (ObjectUtils.isEmpty(adminParameter.getRangeStart())) {
+            adminParameter.setRangeStart(LocalDateTime.now().minusDays(3));
+        }
+        if (ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
+            adminParameter.setRangeEnd(LocalDateTime.now().plusDays(3));
         }
 
         addStats(request);

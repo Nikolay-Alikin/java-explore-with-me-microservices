@@ -1,5 +1,6 @@
 package com.github.artemlv.ewm.event.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.artemlv.ewm.category.model.Category;
 import com.github.artemlv.ewm.location.model.dto.LocationLatAndLonDto;
 import com.github.artemlv.ewm.state.State;
@@ -14,13 +15,16 @@ public record EventDto(
         String annotation,
         Category category,
         int confirmedRequests,
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime createdOn,
         String description,
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime eventDate,
         UserWithoutEmailDto initiator,
         LocationLatAndLonDto location,
         boolean paid,
         int participantLimit,
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime publishedOn,
         boolean requestModeration,
         State state,

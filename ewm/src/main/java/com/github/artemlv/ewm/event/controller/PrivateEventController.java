@@ -4,7 +4,7 @@ import com.github.artemlv.ewm.event.model.Event;
 import com.github.artemlv.ewm.event.model.dto.CreateEventDto;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
 import com.github.artemlv.ewm.event.service.EventService;
-import com.github.artemlv.ewm.request.model.UpdateRequestByIdsDto;
+import com.github.artemlv.ewm.request.model.dto.UpdateRequestByIdsDto;
 import com.github.artemlv.ewm.request.model.dto.RequestDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;

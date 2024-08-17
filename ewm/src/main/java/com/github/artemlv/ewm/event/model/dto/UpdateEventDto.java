@@ -13,19 +13,13 @@ import org.hibernate.validator.constraints.Length;
 import java.time.LocalDateTime;
 
 public record UpdateEventDto(
-        @Length(min = 1, max = 500)
-        @NotBlank
+        @Length(max = 500)
         String annotation,
-        @Positive
         long category,
-        @Length(min = 1, max = 1500)
-        @NotBlank
+        @Length(max = 1500)
         String description,
-        @NotNull
-        @ConstraintFutureInTwoHours
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime eventDate,
-        @NotNull
         LocationLatAndLonDto location,
         boolean paid,
         @PositiveOrZero
@@ -33,7 +27,6 @@ public record UpdateEventDto(
         boolean requestModeration,
         StateAction stateAction,
         @Length(min = 1, max = 120)
-        @NotBlank
         String title
 ) {
 }

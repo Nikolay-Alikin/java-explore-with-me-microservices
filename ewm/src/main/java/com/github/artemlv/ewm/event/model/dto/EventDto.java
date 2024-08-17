@@ -1,7 +1,6 @@
 package com.github.artemlv.ewm.event.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.artemlv.ewm.category.model.Category;
 import com.github.artemlv.ewm.category.model.dto.CategoryDto;
 import com.github.artemlv.ewm.location.model.dto.LocationLatAndLonDto;
 import com.github.artemlv.ewm.state.State;

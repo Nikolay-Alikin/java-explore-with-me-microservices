@@ -12,14 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Repository
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class InDbRequestStorage implements RequestStorage {
-    private final RequestRepository requestRepository;
     private static final String SIMPLE_NAME = Request.class.getSimpleName();
+    private final RequestRepository requestRepository;
 
     @Override
     public int countByEventIdAndStatus(final long id, final State state) {
@@ -53,5 +54,19 @@ public class InDbRequestStorage implements RequestStorage {
     @Override
     public Request getByIdOrElseThrow(final long id) {
         return getById(id).orElseThrow(() -> new NotFoundException(SIMPLE_NAME, id));
+    }
+
+    @Override
+    public List<Request> findAllByRequesterIdAndEventId(final long userId, final long eventId) {
+        final List<Request> requests = requestRepository.findByRequesterIdAndEventId(userId, eventId);
+        log.info("Getting all {} : {}", SIMPLE_NAME, requests);
+        return requests;
+    }
+
+    @Override
+    public List<Request> findAllByIdInAndEventId(final Set<Long> ids, final long eventId) {
+        final List<Request> requests = requestRepository.findByIdInAndEventId(ids, eventId);
+        log.info("Getting all {} : {}", SIMPLE_NAME, requests);
+        return requests;
     }
 }

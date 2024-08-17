@@ -5,12 +5,12 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
-import java.util.List;
+import java.util.Set;
 
 @Builder
 public record UpdateRequestByIdsDto(
         @NotEmpty
-        List<Long> requestIds,
+        Set<Long> requestIds,
         @NotNull
         State status
 ) {

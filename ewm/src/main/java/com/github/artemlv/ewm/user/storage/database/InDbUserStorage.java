@@ -18,8 +18,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class InDbUserStorage implements UserStorage {
-    private final UserRepository userRepository;
     private static final String SIMPLE_NAME = User.class.getSimpleName();
+    private final UserRepository userRepository;
 
     @Override
     @Transactional

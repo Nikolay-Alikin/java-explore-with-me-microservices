@@ -23,12 +23,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
+    private static final String SIMPLE_NAME = Request.class.getSimpleName();
     @Qualifier("mvcConversionService")
     private final ConversionService cs;
     private final RequestStorage requestStorage;
     private final UserStorage userStorage;
     private final EventStorage eventStorage;
-    private static final String SIMPLE_NAME = Request.class.getSimpleName();
 
     @Override
     public RequestDto create(final long userId, final long eventId) {

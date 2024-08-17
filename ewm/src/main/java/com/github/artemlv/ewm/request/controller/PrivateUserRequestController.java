@@ -18,8 +18,8 @@ import java.util.List;
 @RequestMapping("/users/{userId}/requests")
 @RequiredArgsConstructor
 public class PrivateUserRequestController {
-    private final RequestService requestService;
     private static final String SIMPLE_NAME = Request.class.getSimpleName();
+    private final RequestService requestService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

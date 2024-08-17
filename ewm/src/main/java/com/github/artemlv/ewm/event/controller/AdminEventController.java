@@ -20,8 +20,8 @@ import java.util.List;
 @RequestMapping("/admin/events")
 @RequiredArgsConstructor
 public class AdminEventController {
-    private final EventService eventService;
     private static final String SIMPLE_NAME = Event.class.getSimpleName();
+    private final EventService eventService;
 
     @GetMapping
     public List<EventDto> getAll(@Valid final AdminParameter adminParameter) {

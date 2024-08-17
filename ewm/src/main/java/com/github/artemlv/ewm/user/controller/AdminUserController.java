@@ -21,8 +21,8 @@ import java.util.List;
 @RequestMapping(path = "/admin/users")
 @RequiredArgsConstructor
 public class AdminUserController {
-    private final UserService userService;
     private static final String SIMPLE_NAME = User.class.getSimpleName();
+    private final UserService userService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

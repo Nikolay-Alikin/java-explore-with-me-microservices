@@ -21,8 +21,8 @@ import java.util.List;
 @RequestMapping("/events")
 @RequiredArgsConstructor
 public class PublicEventController {
-    private final EventService eventService;
     private static final String SIMPLE_NAME = Event.class.getSimpleName();
+    private final EventService eventService;
 
     @GetMapping("/{eventId}")
     public EventDto getById(@PathVariable @Positive final long eventId, final HttpServletRequest request) {

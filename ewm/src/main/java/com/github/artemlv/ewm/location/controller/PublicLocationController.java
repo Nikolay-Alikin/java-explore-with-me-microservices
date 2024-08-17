@@ -19,8 +19,8 @@ import java.util.List;
 @RequestMapping("/locations")
 @RequiredArgsConstructor
 public class PublicLocationController {
-    private final LocationService locationService;
     private static final String SIMPLE_NAME = Location.class.getSimpleName();
+    private final LocationService locationService;
 
     @GetMapping
     public List<LocationDto> getLocations(@RequestParam(required = false) final String text,

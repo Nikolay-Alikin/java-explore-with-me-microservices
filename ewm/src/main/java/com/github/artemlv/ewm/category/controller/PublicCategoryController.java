@@ -18,8 +18,8 @@ import java.util.List;
 @RequestMapping("/categories")
 @RequiredArgsConstructor
 public class PublicCategoryController {
-    private final CategoryService categoryService;
     private static final String SIMPLE_NAME = Category.class.getSimpleName();
+    private final CategoryService categoryService;
 
     @GetMapping
     public List<CategoryDto> getAll(@RequestParam(defaultValue = "0") @PositiveOrZero final int from,

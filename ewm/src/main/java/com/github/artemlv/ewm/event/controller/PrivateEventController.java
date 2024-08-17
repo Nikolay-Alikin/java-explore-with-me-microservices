@@ -5,6 +5,7 @@ import com.github.artemlv.ewm.event.model.dto.CreateEventDto;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
 import com.github.artemlv.ewm.event.service.EventService;
 import com.github.artemlv.ewm.request.model.dto.RequestDto;
+import com.github.artemlv.ewm.request.model.dto.RequestStatusUpdateResultDto;
 import com.github.artemlv.ewm.request.model.dto.UpdateRequestByIdsDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -23,9 +24,8 @@ import java.util.List;
 @RequestMapping("/users/{userId}/events")
 @RequiredArgsConstructor
 public class PrivateEventController {
-    private final EventService eventService;
     private static final String SIMPLE_NAME = Event.class.getSimpleName();
-
+    private final EventService eventService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -59,7 +59,7 @@ public class PrivateEventController {
     }
 
     @PatchMapping("/{eventId}/requests")
-    public UpdateRequestByIdsDto updateRequestsByUserAndEvent(
+    public RequestStatusUpdateResultDto updateRequestsByUserAndEvent(
             @RequestBody final UpdateRequestByIdsDto updateEventStatusByRequestIds,
             @PathVariable @Positive final long userId,
             @PathVariable @Positive final long eventId) {

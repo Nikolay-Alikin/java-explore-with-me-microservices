@@ -17,8 +17,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class InDbCategoryStorage implements CategoryStorage {
-    private final CategoryRepository categoryRepository;
     private static final String SIMPLE_NAME = Category.class.getSimpleName();
+    private final CategoryRepository categoryRepository;
 
     @Override
     @Transactional

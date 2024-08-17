@@ -18,13 +18,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class InDbEventStorage implements EventStorage {
-    private final EventRepository eventRepository;
     private static final String SIMPLE_NAME = Event.class.getSimpleName();
+    private final EventRepository eventRepository;
 
     @Override
     public List<Event> findAll(final BooleanExpression predicate, final PageRequest pageRequest) {
-        final List<Event> events = eventRepository.findAll(predicate, pageRequest).stream().toList();
-        log.info("Getting all {} : {}", SIMPLE_NAME, events);
+        final List<Event> events = eventRepository.findAll(predicate, pageRequest).toList();
+        log.info("Getting all {} with predicate : [{}] : {}", SIMPLE_NAME, predicate, events);
         return events;
     }
 
@@ -52,6 +52,13 @@ public class InDbEventStorage implements EventStorage {
         final List<Event> locations = eventRepository.findByLocationLatAndLocationLon(lat, lon);
         log.info("Getting a list of events by location coordinates - {}, {}, {}", SIMPLE_NAME, lat, lon);
         return locations;
+    }
+
+    @Override
+    public void existsByIdOrElseThrow(final long id) {
+        if (!eventRepository.existsById(id)) {
+            throw new NotFoundException(SIMPLE_NAME, id);
+        }
     }
 
     @Override

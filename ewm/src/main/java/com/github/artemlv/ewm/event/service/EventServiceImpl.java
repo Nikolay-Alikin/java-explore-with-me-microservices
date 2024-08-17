@@ -12,8 +12,11 @@ import com.github.artemlv.ewm.exception.type.ConflictException;
 import com.github.artemlv.ewm.exception.type.NotFoundException;
 import com.github.artemlv.ewm.location.model.Location;
 import com.github.artemlv.ewm.location.service.LocationService;
+import com.github.artemlv.ewm.request.model.Request;
 import com.github.artemlv.ewm.request.model.dto.RequestDto;
+import com.github.artemlv.ewm.request.model.dto.RequestStatusUpdateResultDto;
 import com.github.artemlv.ewm.request.model.dto.UpdateRequestByIdsDto;
+import com.github.artemlv.ewm.request.storage.RequestStorage;
 import com.github.artemlv.ewm.state.State;
 import com.github.artemlv.ewm.user.model.User;
 import com.github.artemlv.ewm.user.storage.UserStorage;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -39,14 +43,14 @@ import static com.github.artemlv.ewm.event.model.QEvent.event;
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
+    private static final String SIMPLE_NAME = Event.class.getSimpleName();
     @Qualifier("mvcConversionService")
     private final ConversionService cs;
     private final EventStorage eventStorage;
     private final UserStorage userStorage;
     private final CategoryStorage categoryStorage;
     private final LocationService locationService;
-    private static final String SIMPLE_NAME = Event.class.getSimpleName();
-
+    private final RequestStorage requestStorage;
 
     @Override
     public List<EventDto> getAllByAdmin(final AdminParameter adminParameter) {
@@ -73,13 +77,13 @@ public class EventServiceImpl implements EventService {
         }
 
         if (ObjectUtils.isEmpty(adminParameter.getRangeStart())) {
-            adminParameter.setRangeStart(LocalDateTime.now().minusDays(3));
+            adminParameter.setRangeStart(LocalDateTime.now().minusDays(5));
         }
         if (ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
-            adminParameter.setRangeEnd(LocalDateTime.now().plusDays(3));
+            adminParameter.setRangeEnd(LocalDateTime.now().plusDays(5));
         }
 
-        return eventStorage.findAll(predicate, PageRequest.of(adminParameter.getFrom() / adminParameter.getSize(),
+        return eventStorage.findAll(predicate, PageRequest.of(adminParameter.getFrom(),
                         adminParameter.getSize())).stream()
                 .map(event -> cs.convert(event, EventDto.class))
                 .toList();
@@ -136,7 +140,6 @@ public class EventServiceImpl implements EventService {
         event.setCategory(category);
         event.setLocation(location);
         event.setCreatedOn(LocalDateTime.now());
-        event.setRequestModeration(true);
         event.setState(State.PENDING);
 
         return cs.convert(eventStorage.save(event), EventDto.class);
@@ -152,8 +155,11 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<RequestDto> getRequestsByUserIdAndEventId(final long userId, final long eventId) {
-        checkIfTheUserIsTheEventCreator(userId, eventId);
-        return List.of();
+        userStorage.existsByIdOrElseThrow(userId);
+        eventStorage.existsByIdOrElseThrow(eventId);
+        return requestStorage.findAllByRequesterIdAndEventId(userId, eventId).stream()
+                .map(event -> cs.convert(event, RequestDto.class))
+                .toList();
     }
 
     @Override
@@ -165,9 +171,51 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public UpdateRequestByIdsDto updateRequestsStatusByUserIdAndEventId(final long userId, final long eventId,
-                                                                        UpdateRequestByIdsDto update) {
-        return null;
+    public RequestStatusUpdateResultDto updateRequestsStatusByUserIdAndEventId(final long userId, final long eventId,
+                                                                               UpdateRequestByIdsDto update) {
+        List<Request> requests = requestStorage.findAllByIdInAndEventId(update.requestIds(), eventId);
+
+        RequestStatusUpdateResultDto result = RequestStatusUpdateResultDto.builder()
+                .confirmedRequests(new ArrayList<>())
+                .rejectedRequests(new ArrayList<>())
+                .build();
+
+        requests.forEach(request -> {
+                    if (request.getStatus() != State.PENDING) {
+                        throw new ConflictException(
+                                "The status can only be changed for applications that are in a pending state"
+                        );
+                    }
+
+                    long countRequest = requestStorage.countByEventIdAndStatus(eventId, State.CONFIRMED);
+
+                    Event event = request.getEvent();
+
+                    if (countRequest >= event.getParticipantLimit()) {
+                        throw new ConflictException("The limit on applications for this event has been reached");
+                    }
+
+                    if (event.getParticipantLimit() != 0 && event.isRequestModeration()) {
+                        request.setStatus(update.status());
+
+                        if (countRequest + 1L == event.getParticipantLimit()) {
+                            request.setStatus(State.CANCELED);
+                        }
+
+                        requestStorage.save(request);
+
+                        if (update.status() == State.CONFIRMED) {
+                            result.confirmedRequests().add(cs.convert(request, RequestDto.class));
+                        }
+
+                        if (update.status() == State.REJECTED) {
+                            result.rejectedRequests().add(cs.convert(request, RequestDto.class));
+                        }
+                    }
+                }
+        );
+
+        return result;
     }
 
     @Override

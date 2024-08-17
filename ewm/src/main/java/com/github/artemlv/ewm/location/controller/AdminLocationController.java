@@ -20,8 +20,8 @@ import javax.xml.stream.Location;
 @RequestMapping("/admin/locations")
 @RequiredArgsConstructor
 public class AdminLocationController {
-    private final LocationService locationService;
     private static final String SIMPLE_NAME = Location.class.getSimpleName();
+    private final LocationService locationService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

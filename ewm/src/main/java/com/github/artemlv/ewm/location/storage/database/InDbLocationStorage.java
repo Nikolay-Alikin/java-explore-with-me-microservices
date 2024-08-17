@@ -17,8 +17,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class InDbLocationStorage implements LocationStorage {
-    private final LocationRepository locationRepository;
     private static final String SIMPLE_NAME = Location.class.getSimpleName();
+    private final LocationRepository locationRepository;
 
     @Override
     @Transactional

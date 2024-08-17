@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/categories")
 @RequiredArgsConstructor
 public class AdminCategoryController {
-    private final CategoryService categoryService;
     private static final String SIMPLE_NAME = Category.class.getSimpleName();
+    private final CategoryService categoryService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

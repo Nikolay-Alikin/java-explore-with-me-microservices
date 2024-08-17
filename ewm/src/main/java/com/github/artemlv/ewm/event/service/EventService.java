@@ -5,6 +5,7 @@ import com.github.artemlv.ewm.event.model.dto.CreateEventDto;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
 import com.github.artemlv.ewm.event.model.dto.UpdateEventDto;
 import com.github.artemlv.ewm.request.model.dto.RequestDto;
+import com.github.artemlv.ewm.request.model.dto.RequestStatusUpdateResultDto;
 import com.github.artemlv.ewm.request.model.dto.UpdateRequestByIdsDto;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -23,9 +24,9 @@ public interface EventService {
 
     EventDto getByIdAndUserId(final long eventId, final long userId);
 
-    UpdateRequestByIdsDto updateRequestsStatusByUserIdAndEventId(final long userId,
-                                                                 final long eventId,
-                                                                 final UpdateRequestByIdsDto update);
+    RequestStatusUpdateResultDto updateRequestsStatusByUserIdAndEventId(final long userId,
+                                                                        final long eventId,
+                                                                        final UpdateRequestByIdsDto update);
 
     EventDto getById(final long eventId, final HttpServletRequest request);
 

@@ -21,4 +21,6 @@ public interface EventStorage {
     List<Event> findAllByLocationAndRadius(final double lat, final double lon, final double radius);
 
     List<Event> findAllEventsByLocation(final double lat, final double lon);
+
+    void existsByIdOrElseThrow(final long id);
 }

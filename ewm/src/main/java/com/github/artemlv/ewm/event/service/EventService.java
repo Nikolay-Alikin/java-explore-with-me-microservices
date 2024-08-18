@@ -1,6 +1,7 @@
 package com.github.artemlv.ewm.event.service;
 
 import com.github.artemlv.ewm.event.model.AdminParameter;
+import com.github.artemlv.ewm.event.model.PublicParameter;
 import com.github.artemlv.ewm.event.model.dto.CreateEventDto;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
 import com.github.artemlv.ewm.event.model.dto.UpdateEventDto;
@@ -30,7 +31,9 @@ public interface EventService {
 
     EventDto getById(final long eventId, final HttpServletRequest request);
 
-    List<EventDto> getAll(final AdminParameter adminParameter, final HttpServletRequest request);
+    List<EventDto> getAll(final PublicParameter publicParameter, final HttpServletRequest request);
 
     List<EventDto> getAllByLocation(final Double lat, final Double lon, final Double radius);
+
+    EventDto updateByUser(final long userId, final long eventId, final UpdateEventDto updateEventDto);
 }

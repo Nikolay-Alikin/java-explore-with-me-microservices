@@ -17,7 +17,7 @@ public record UpdateEventDto(
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime eventDate,
         LocationLatAndLonDto location,
-        boolean paid,
+        Boolean paid,
         @PositiveOrZero
         int participantLimit,
         boolean requestModeration,

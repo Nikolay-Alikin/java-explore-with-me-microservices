@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +60,13 @@ public class InDbEventStorage implements EventStorage {
         if (!eventRepository.existsById(id)) {
             throw new NotFoundException(SIMPLE_NAME, id);
         }
+    }
+
+    @Override
+    public List<Event> findAll(final Specification<Event> spec, final PageRequest pageRequest) {
+        final List<Event> events = eventRepository.findAll(spec, pageRequest).toList();
+        log.info("Getting all {} with specification : [{}] : {}", SIMPLE_NAME, spec, events);
+        return events;
     }
 
     @Override

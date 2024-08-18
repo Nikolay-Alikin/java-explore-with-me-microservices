@@ -1,7 +1,7 @@
 package com.github.artemlv.ewm.event.controller;
 
-import com.github.artemlv.ewm.event.model.AdminParameter;
 import com.github.artemlv.ewm.event.model.Event;
+import com.github.artemlv.ewm.event.model.PublicParameter;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
 import com.github.artemlv.ewm.event.service.EventService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,10 +31,10 @@ public class PublicEventController {
     }
 
     @GetMapping
-    public List<EventDto> getAll(@Valid final AdminParameter adminParameter,
+    public List<EventDto> getAll(@Valid final PublicParameter publicParameter,
                                  final HttpServletRequest request) {
-        log.info("Public {} request with parameters - {}", SIMPLE_NAME, adminParameter);
-        return eventService.getAll(adminParameter, request);
+        log.info("Public {} request with parameters - {}", SIMPLE_NAME, publicParameter);
+        return eventService.getAll(publicParameter, request);
     }
 
     @GetMapping("/locations")

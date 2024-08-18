@@ -40,12 +40,12 @@ public class RequestServiceImpl implements RequestService {
                     .formatted(SIMPLE_NAME, userId, eventId));
         }
 
-        if (event.getState() != State.PUBLISHED) {
+/*        if (event.getState() != State.PUBLISHED) {
             throw new ConflictException("Cannot add a request to an unpublished eventId: %d".formatted(eventId));
         } else if (event.getParticipantLimit() != 0 &&
                 requestStorage.countByEventIdAndStatus(event.getId(), State.CONFIRMED) >= event.getParticipantLimit()) {
             throw new ConflictException("Event participation limit exceeded eventId: %d".formatted(eventId));
-        }
+        }*/
 
         Request request = Request.builder()
                 .created(LocalDateTime.now())

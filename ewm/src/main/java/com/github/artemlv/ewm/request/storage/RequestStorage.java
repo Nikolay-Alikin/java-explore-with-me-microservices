@@ -21,4 +21,8 @@ public interface RequestStorage {
     List<Request> findAllByRequesterIdAndEventId(final long userId, final long eventId);
 
     List<Request> findAllByIdInAndEventId(final Set<Long> ids, final long eventId);
+
+    void saveAll(List<Request> requests);
+
+    List<Request> findAllByEventId(final long eventId);
 }

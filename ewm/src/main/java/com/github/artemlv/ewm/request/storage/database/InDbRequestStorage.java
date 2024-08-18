@@ -59,14 +59,28 @@ public class InDbRequestStorage implements RequestStorage {
     @Override
     public List<Request> findAllByRequesterIdAndEventId(final long userId, final long eventId) {
         final List<Request> requests = requestRepository.findByRequesterIdAndEventId(userId, eventId);
-        log.info("Getting all {} : {}", SIMPLE_NAME, requests);
+        log.info("Getting all by requester id and event id {} : {}", SIMPLE_NAME, requests);
         return requests;
     }
 
     @Override
     public List<Request> findAllByIdInAndEventId(final Set<Long> ids, final long eventId) {
         final List<Request> requests = requestRepository.findByIdInAndEventId(ids, eventId);
-        log.info("Getting all {} : {}", SIMPLE_NAME, requests);
+        log.info("Getting all by Ids {} : {}", SIMPLE_NAME, requests);
+        return requests;
+    }
+
+    @Override
+    @Transactional
+    public void saveAll(final List<Request> requests) {
+        log.info("Save All {} - {}", SIMPLE_NAME, requests);
+        requestRepository.saveAll(requests);
+    }
+
+    @Override
+    public List<Request> findAllByEventId(long eventId) {
+        final List<Request> requests = requestRepository.findByEventId(eventId);
+        log.info("Getting all by event id {} : {}", SIMPLE_NAME, requests);
         return requests;
     }
 }

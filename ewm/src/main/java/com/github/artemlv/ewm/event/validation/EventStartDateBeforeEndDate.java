@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE_USE)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = CheckStartAndEndDateValidator.class)
+@Constraint(validatedBy = {CheckStartAndEndDateValidator.class, CheckStartAndEndDateAdminValidator.class})
 public @interface EventStartDateBeforeEndDate {
     String message() default "Event date is null or end date is greater than start date";
 

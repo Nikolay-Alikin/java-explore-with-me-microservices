@@ -3,6 +3,7 @@ package com.github.artemlv.ewm.event.storage;
 import com.github.artemlv.ewm.event.model.Event;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,4 +24,6 @@ public interface EventStorage {
     List<Event> findAllEventsByLocation(final double lat, final double lon);
 
     void existsByIdOrElseThrow(final long id);
+
+    List<Event> findAll(final Specification<Event> spec, final PageRequest pageRequest);
 }

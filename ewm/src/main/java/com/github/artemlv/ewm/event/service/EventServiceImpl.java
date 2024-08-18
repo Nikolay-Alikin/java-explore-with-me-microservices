@@ -4,12 +4,12 @@ import com.github.artemlv.ewm.category.model.Category;
 import com.github.artemlv.ewm.category.storage.CategoryStorage;
 import com.github.artemlv.ewm.event.model.AdminParameter;
 import com.github.artemlv.ewm.event.model.Event;
+import com.github.artemlv.ewm.event.model.PublicParameter;
 import com.github.artemlv.ewm.event.model.dto.CreateEventDto;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
 import com.github.artemlv.ewm.event.model.dto.UpdateEventDto;
 import com.github.artemlv.ewm.event.storage.EventStorage;
 import com.github.artemlv.ewm.exception.type.ConflictException;
-import com.github.artemlv.ewm.exception.type.NotFoundException;
 import com.github.artemlv.ewm.location.model.Location;
 import com.github.artemlv.ewm.location.service.LocationService;
 import com.github.artemlv.ewm.request.model.Request;
@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -54,37 +55,9 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventDto> getAllByAdmin(final AdminParameter adminParameter) {
-        BooleanExpression predicate = event.isNotNull();
-
-        if (!ObjectUtils.isEmpty(adminParameter.getUsers())) {
-            predicate = predicate.and(event.initiator.id.in(adminParameter.getUsers()));
-        }
-
-        if (!ObjectUtils.isEmpty(adminParameter.getStates())) {
-            predicate = predicate.and(event.state.in(adminParameter.getStates()));
-        }
-        if (!ObjectUtils.isEmpty(adminParameter.getCategories())) {
-            predicate = predicate.and(event.category.id.in(adminParameter.getCategories()));
-        }
-
-        if (!ObjectUtils.isEmpty(adminParameter.getRangeStart()) && !ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
-            predicate = predicate.and(event.createdOn.between(adminParameter.getRangeStart(),
-                    adminParameter.getRangeEnd()));
-        } else if (!ObjectUtils.isEmpty(adminParameter.getRangeStart())) {
-            predicate = predicate.and(event.createdOn.after(adminParameter.getRangeStart()));
-        } else if (!ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
-            predicate = predicate.and(event.createdOn.before(adminParameter.getRangeEnd()));
-        }
-
-        if (ObjectUtils.isEmpty(adminParameter.getRangeStart())) {
-            adminParameter.setRangeStart(LocalDateTime.now().minusDays(5));
-        }
-        if (ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
-            adminParameter.setRangeEnd(LocalDateTime.now().plusDays(5));
-        }
-
-        return eventStorage.findAll(predicate, PageRequest.of(adminParameter.getFrom(),
-                        adminParameter.getSize())).stream()
+        return eventStorage.findAll(getSpecification(adminParameter),
+                        PageRequest.of(adminParameter.getFrom() / adminParameter.getSize(),
+                                adminParameter.getSize())).stream()
                 .map(event -> cs.convert(event, EventDto.class))
                 .toList();
     }
@@ -157,7 +130,7 @@ public class EventServiceImpl implements EventService {
     public List<RequestDto> getRequestsByUserIdAndEventId(final long userId, final long eventId) {
         userStorage.existsByIdOrElseThrow(userId);
         eventStorage.existsByIdOrElseThrow(eventId);
-        return requestStorage.findAllByRequesterIdAndEventId(userId, eventId).stream()
+        return requestStorage.findAllByEventId(eventId).stream()
                 .map(event -> cs.convert(event, RequestDto.class))
                 .toList();
     }
@@ -179,6 +152,8 @@ public class EventServiceImpl implements EventService {
                 .confirmedRequests(new ArrayList<>())
                 .rejectedRequests(new ArrayList<>())
                 .build();
+
+        List<Request> requestsForSave = new ArrayList<>();
 
         requests.forEach(request -> {
                     if (request.getStatus() != State.PENDING) {
@@ -202,7 +177,7 @@ public class EventServiceImpl implements EventService {
                             request.setStatus(State.CANCELED);
                         }
 
-                        requestStorage.save(request);
+                        requestsForSave.add(request);
 
                         if (update.status() == State.CONFIRMED) {
                             result.confirmedRequests().add(cs.convert(request, RequestDto.class));
@@ -215,6 +190,10 @@ public class EventServiceImpl implements EventService {
                 }
         );
 
+        if (!requestsForSave.isEmpty()) {
+            requestStorage.saveAll(requestsForSave);
+        }
+
         return result;
     }
 
@@ -222,9 +201,9 @@ public class EventServiceImpl implements EventService {
     public EventDto getById(final long eventId, final HttpServletRequest request) {
         Event event = eventStorage.getByIdOrElseThrow(eventId);
 
-        if (event.getState() != State.PUBLISHED) {
+/*        if (event.getState() != State.PUBLISHED) {
             throw new NotFoundException(SIMPLE_NAME, eventId);
-        }
+        }*/
 
         addStats(request);
 
@@ -232,40 +211,33 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDto> getAll(final AdminParameter adminParameter, final HttpServletRequest request) {
+    public List<EventDto> getAll(final PublicParameter publicParameter, final HttpServletRequest request) {
         BooleanExpression predicate = event.isNotNull();
 
-        if (!ObjectUtils.isEmpty(adminParameter.getUsers())) {
-            predicate = predicate.and(event.initiator.id.in(adminParameter.getUsers()));
+        if (!ObjectUtils.isEmpty(publicParameter.getText())) {
+            predicate = predicate.and(event.annotation.likeIgnoreCase(publicParameter.getText()));
         }
 
-        if (!ObjectUtils.isEmpty(adminParameter.getStates())) {
-            predicate = predicate.and(event.state.in(adminParameter.getStates()));
+        if (!ObjectUtils.isEmpty(publicParameter.getCategories())) {
+            predicate = predicate.and(event.category.id.in(publicParameter.getCategories()));
         }
-        if (!ObjectUtils.isEmpty(adminParameter.getCategories())) {
-            predicate = predicate.and(event.category.id.in(adminParameter.getCategories()));
-        }
-
-        if (!ObjectUtils.isEmpty(adminParameter.getRangeStart()) && !ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
-            predicate = predicate.and(event.createdOn.between(adminParameter.getRangeStart(),
-                    adminParameter.getRangeEnd()));
-        } else if (!ObjectUtils.isEmpty(adminParameter.getRangeStart())) {
-            predicate = predicate.and(event.createdOn.after(adminParameter.getRangeStart()));
-        } else if (!ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
-            predicate = predicate.and(event.createdOn.before(adminParameter.getRangeEnd()));
+        if (!publicParameter.isPaid()) {
+            predicate = predicate.and(event.paid.eq(publicParameter.isPaid()));
         }
 
-        if (ObjectUtils.isEmpty(adminParameter.getRangeStart())) {
-            adminParameter.setRangeStart(LocalDateTime.now().minusDays(3));
-        }
-        if (ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
-            adminParameter.setRangeEnd(LocalDateTime.now().plusDays(3));
+        if (!ObjectUtils.isEmpty(publicParameter.getRangeStart()) && !ObjectUtils.isEmpty(publicParameter.getRangeEnd())) {
+            predicate = predicate.and(event.createdOn.between(publicParameter.getRangeStart(),
+                    publicParameter.getRangeEnd()));
+        } else if (!ObjectUtils.isEmpty(publicParameter.getRangeStart())) {
+            predicate = predicate.and(event.createdOn.after(publicParameter.getRangeStart()));
+        } else if (!ObjectUtils.isEmpty(publicParameter.getRangeEnd())) {
+            predicate = predicate.and(event.createdOn.before(publicParameter.getRangeEnd()));
         }
 
         addStats(request);
 
-        return eventStorage.findAll(predicate, PageRequest.of(adminParameter.getFrom() / adminParameter.getSize(),
-                        adminParameter.getSize())).stream()
+        return eventStorage.findAll(predicate, PageRequest.of(publicParameter.getFrom() / publicParameter.getSize(),
+                        publicParameter.getSize())).stream()
                 .map(event -> cs.convert(event, EventDto.class))
                 .toList();
     }
@@ -285,6 +257,67 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public EventDto updateByUser(final long userId, final long eventId, final UpdateEventDto updateEventDto) {
+        Event eventInStorage = eventStorage.getByIdOrElseThrow(eventId);
+
+        if (eventInStorage.getInitiator().getId() != userId) {
+            throw new ConflictException("The initiator does not belong to this event");
+        }
+
+        checkEventStatePublished(eventInStorage.getState());
+
+        Event event = cs.convert(updateEventDto, Event.class);
+        event.setId(userId);
+        event.setCategory(eventInStorage.getCategory());
+        event.setConfirmedRequests(eventInStorage.getConfirmedRequests());
+        event.setCreatedOn(eventInStorage.getCreatedOn());
+        event.setPublishedOn(eventInStorage.getPublishedOn());
+        event.setState(eventInStorage.getState());
+        event.setViews(eventInStorage.getViews());
+        event.setInitiator(eventInStorage.getInitiator());
+        event.setLocation(eventInStorage.getLocation());
+
+        if (ObjectUtils.isEmpty(updateEventDto.stateAction())) {
+            event.setState(eventInStorage.getState());
+        } else {
+            switch (updateEventDto.stateAction()) {
+                case REJECT_EVENT -> {
+                    checkEventStatePublished(event.getState());
+                    event.setState(State.CANCELED);
+                }
+
+                case PUBLISH_EVENT -> {
+                    checkEventStatePublished(event.getState());
+                    event.setPublishedOn(LocalDateTime.now());
+                    event.setState(State.PUBLISHED);
+                }
+            }
+        }
+
+        if (ObjectUtils.isEmpty(event.getTitle())) {
+            event.setTitle(eventInStorage.getTitle());
+        }
+
+        if (ObjectUtils.isEmpty(event.getAnnotation())) {
+            event.setAnnotation(eventInStorage.getAnnotation());
+        }
+
+        if (ObjectUtils.isEmpty(updateEventDto.paid())) {
+            event.setPaid(eventInStorage.isPaid());
+        }
+
+        if (ObjectUtils.isEmpty(event.getDescription())) {
+            event.setDescription(eventInStorage.getDescription());
+        }
+
+        if (ObjectUtils.isEmpty(event.getEventDate())) {
+            event.setEventDate(eventInStorage.getEventDate());
+        }
+
+        return cs.convert(eventStorage.save(event), EventDto.class);
+    }
+
     private void addStats(final HttpServletRequest request) {
         //Необходимо положить статистику
 
@@ -295,5 +328,69 @@ public class EventServiceImpl implements EventService {
             throw new ConflictException(String.format("Event originator userId: %d cannot add a membership request " +
                     "in its event eventId: %d", userId, eventId));
         }
+    }
+
+    private Specification<Event> checkCategories(final List<Long> categories) {
+        return ObjectUtils.isEmpty(categories) ? null
+                : ((root, query, criteriaBuilder) -> root.get("category").get("id").in(categories));
+    }
+
+    private Specification<Event> checkByUserIds(final List<Long> userIds) {
+        return ObjectUtils.isEmpty(userIds) ? null
+                : ((root, query, criteriaBuilder) -> root.get("initiator").get("id").in(userIds));
+    }
+
+    private Specification<Event> checkStates(final List<State> states) {
+        return ObjectUtils.isEmpty(states) ? null
+                : ((root, query, criteriaBuilder) -> root.get("state").as(String.class).in(states.stream()
+                .map(Enum::toString)
+                .toList())
+        );
+    }
+
+    private Specification<Event> checkRangeStart(final LocalDateTime start) {
+        return ((root, query, criteriaBuilder) ->
+                criteriaBuilder.greaterThanOrEqualTo(root.get("eventDate"),
+                        start == null ? LocalDateTime.now() : start));
+    }
+
+    private Specification<Event> checkRangeEnd(final LocalDateTime end) {
+        return ObjectUtils.isEmpty(end) ? null
+                : ((root, query, criteriaBuilder) -> criteriaBuilder.lessThan(root.get("eventDate"), end));
+    }
+
+    private Specification<Event> getSpecification(final AdminParameter adminParameter) {
+        return Specification.where(checkByUserIds(adminParameter.getUsers()))
+//                .and(checkStates(adminParameter.getStates()))
+                .and(checkCategories(adminParameter.getCategories()))
+                .and(checkRangeStart(adminParameter.getRangeStart()))
+                .and(checkRangeEnd(adminParameter.getRangeEnd()));
+    }
+
+    private BooleanExpression getPredicate(final AdminParameter adminParameter) {
+        BooleanExpression predicate = event.isNotNull();
+
+        if (!ObjectUtils.isEmpty(adminParameter.getUsers())) {
+            predicate = predicate.and(event.initiator.id.in(adminParameter.getUsers()));
+        }
+
+/*        if (!ObjectUtils.isEmpty(adminParameter.getStates())) {
+            predicate = predicate.and(event.state.in(adminParameter.getStates()));
+        }*/
+
+        if (!ObjectUtils.isEmpty(adminParameter.getCategories())) {
+            predicate = predicate.and(event.category.id.in(adminParameter.getCategories()));
+        }
+
+        if (!ObjectUtils.isEmpty(adminParameter.getRangeStart()) && !ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
+            predicate = predicate.and(event.createdOn.between(adminParameter.getRangeStart(),
+                    adminParameter.getRangeEnd()));
+        } else if (!ObjectUtils.isEmpty(adminParameter.getRangeStart())) {
+            predicate = predicate.and(event.createdOn.after(adminParameter.getRangeStart()));
+        } else if (!ObjectUtils.isEmpty(adminParameter.getRangeEnd())) {
+            predicate = predicate.and(event.createdOn.before(adminParameter.getRangeEnd()));
+        }
+
+        return predicate;
     }
 }

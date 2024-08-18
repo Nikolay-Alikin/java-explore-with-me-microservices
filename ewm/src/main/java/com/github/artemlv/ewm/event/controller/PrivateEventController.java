@@ -3,6 +3,7 @@ package com.github.artemlv.ewm.event.controller;
 import com.github.artemlv.ewm.event.model.Event;
 import com.github.artemlv.ewm.event.model.dto.CreateEventDto;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
+import com.github.artemlv.ewm.event.model.dto.UpdateEventDto;
 import com.github.artemlv.ewm.event.service.EventService;
 import com.github.artemlv.ewm.request.model.dto.RequestDto;
 import com.github.artemlv.ewm.request.model.dto.RequestStatusUpdateResultDto;
@@ -66,6 +67,14 @@ public class PrivateEventController {
         log.info("Request to update the status of requests for an {} by id - {} by user with id - {} - {}",
                 SIMPLE_NAME, eventId, userId, updateEventStatusByRequestIds);
         return eventService.updateRequestsStatusByUserIdAndEventId(userId, eventId, updateEventStatusByRequestIds);
+    }
+
+    @PatchMapping("/{eventId}")
+    public EventDto update(@PathVariable @Positive final long userId,
+                           @PathVariable @Positive final long eventId,
+                           @RequestBody @Valid UpdateEventDto updateEventDto) {
+        log.info("Request to update {} {} eventId = {}", SIMPLE_NAME, updateEventDto, eventId);
+        return eventService.updateByUser(userId, eventId, updateEventDto);
     }
 
 }

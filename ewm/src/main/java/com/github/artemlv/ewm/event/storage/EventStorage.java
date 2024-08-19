@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface EventStorage {
     Event save(Event event);
@@ -26,4 +27,10 @@ public interface EventStorage {
     void existsByIdOrElseThrow(final long id);
 
     List<Event> findAll(final Specification<Event> spec, final PageRequest pageRequest);
+
+    Set<Event> findAllById(Set<Long> events);
+
+    List<Event> findByCategoryId(final long id);
+
+    void saveAll(final List<Event> lists);
 }

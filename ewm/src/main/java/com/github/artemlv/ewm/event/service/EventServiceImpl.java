@@ -62,42 +62,88 @@ public class EventServiceImpl implements EventService {
                 .toList();
     }
 
+    private Event getDifference(Event eventInStorage, final UpdateEventDto updateEventDto) {
+        Event event = cs.convert(updateEventDto, Event.class);
+        event.setCategory(eventInStorage.getCategory());
+        event.setConfirmedRequests(eventInStorage.getConfirmedRequests());
+        event.setCreatedOn(eventInStorage.getCreatedOn());
+        event.setPublishedOn(eventInStorage.getPublishedOn());
+        event.setState(eventInStorage.getState());
+        event.setViews(eventInStorage.getViews());
+        event.setInitiator(eventInStorage.getInitiator());
+        event.setLocation(eventInStorage.getLocation());
+
+        if (ObjectUtils.isEmpty(updateEventDto.participantLimit())) {
+            event.setParticipantLimit(eventInStorage.getParticipantLimit());
+        } else {
+            event.setParticipantLimit(updateEventDto.participantLimit());
+        }
+
+        if (ObjectUtils.isEmpty(updateEventDto.stateAction())) {
+            event.setState(eventInStorage.getState());
+        }
+
+        if (ObjectUtils.isEmpty(event.getTitle())) {
+            event.setTitle(eventInStorage.getTitle());
+        }
+
+        if (ObjectUtils.isEmpty(event.getAnnotation())) {
+            event.setAnnotation(eventInStorage.getAnnotation());
+        }
+
+        if (ObjectUtils.isEmpty(updateEventDto.paid())) {
+            event.setPaid(eventInStorage.isPaid());
+        } else {
+            event.setPaid(updateEventDto.paid());
+        }
+
+        if (ObjectUtils.isEmpty(event.getDescription())) {
+            event.setDescription(eventInStorage.getDescription());
+        }
+
+        if (ObjectUtils.isEmpty(event.getEventDate())) {
+            event.setEventDate(eventInStorage.getEventDate());
+        }
+
+        if (updateEventDto.category() != 0) {
+            eventInStorage.setCategory(categoryStorage.getByIdOrElseThrow(updateEventDto.category()));
+        }
+
+        return event;
+    }
+
     @Override
-    public EventDto updateByIdAdmin(final long eventId, final UpdateEventDto updateEventDto) {
-        Event event = eventStorage.getByIdOrElseThrow(eventId);
+    public EventDto updateByAdmin(final long eventId, final UpdateEventDto updateEventDto) {
+        Event eventInStorage = eventStorage.getByIdOrElseThrow(eventId);
 
         if (!ObjectUtils.isEmpty(updateEventDto.stateAction())) {
             switch (updateEventDto.stateAction()) {
                 case REJECT_EVENT -> {
-                    checkEventStatePublished(event.getState());
-                    event.setState(State.CANCELED);
+                    if (eventInStorage.getState() == State.PUBLISHED) {
+                        throw new ConflictException("An event can only be rejected if it has not yet been published");
+                    }
+
+                    eventInStorage.setParticipantLimit(0);
+                    eventInStorage.setState(State.CANCELED);
                 }
 
                 case PUBLISH_EVENT -> {
-                    checkEventStatePublished(event.getState());
-                    event.setPublishedOn(LocalDateTime.now());
-                    event.setState(State.PUBLISHED);
+                    if (eventInStorage.getState() != State.PENDING) {
+                        throw new ConflictException("An event can only be published if it is in a pending publication state");
+                    }
+                    eventInStorage.setState(State.PUBLISHED);
+                    eventInStorage.setPublishedOn(LocalDateTime.now());
                 }
             }
         }
 
         if (!ObjectUtils.isEmpty(updateEventDto.location())) {
-            event.setLocation(cs.convert(
+            eventInStorage.setLocation(cs.convert(
                     locationService.getByCoordinatesOrElseCreate(updateEventDto.location()), Location.class)
             );
         }
 
-        if (updateEventDto.category() != 0) {
-            event.setCategory(categoryStorage.getByIdOrElseThrow(updateEventDto.category()));
-        }
-
-        return cs.convert(event, EventDto.class);
-    }
-
-    private void checkEventStatePublished(final State state) {
-        if (state == State.PUBLISHED) {
-            throw new ConflictException("An event can only be rejected if it has not yet been published");
-        }
+        return cs.convert(getDifference(eventInStorage, updateEventDto), EventDto.class);
     }
 
     @Override
@@ -207,7 +253,9 @@ public class EventServiceImpl implements EventService {
 
         addStats(request);
 
-        return cs.convert(event, EventDto.class);
+        event.setViews(event.getViews() + 1);
+
+        return cs.convert(eventStorage.save(event), EventDto.class);
     }
 
     @Override
@@ -221,8 +269,8 @@ public class EventServiceImpl implements EventService {
         if (!ObjectUtils.isEmpty(publicParameter.getCategories())) {
             predicate = predicate.and(event.category.id.in(publicParameter.getCategories()));
         }
-        if (!publicParameter.isPaid()) {
-            predicate = predicate.and(event.paid.eq(publicParameter.isPaid()));
+        if (!ObjectUtils.isEmpty(publicParameter.getPaid())) {
+            predicate = predicate.and(event.paid.eq(publicParameter.getPaid()));
         }
 
         if (!ObjectUtils.isEmpty(publicParameter.getRangeStart()) && !ObjectUtils.isEmpty(publicParameter.getRangeEnd())) {
@@ -236,8 +284,16 @@ public class EventServiceImpl implements EventService {
 
         addStats(request);
 
-        return eventStorage.findAll(predicate, PageRequest.of(publicParameter.getFrom() / publicParameter.getSize(),
-                        publicParameter.getSize())).stream()
+        final List<Event> lists = eventStorage.findAll(
+                predicate, PageRequest.of(publicParameter.getFrom() / publicParameter.getSize(),
+                        publicParameter.getSize())
+        );
+
+        lists.forEach(event -> event.setViews(event.getViews() + 1));
+
+        eventStorage.saveAll(lists);
+
+        return lists.stream()
                 .map(event -> cs.convert(event, EventDto.class))
                 .toList();
     }
@@ -265,57 +321,15 @@ public class EventServiceImpl implements EventService {
             throw new ConflictException("The initiator does not belong to this event");
         }
 
-        checkEventStatePublished(eventInStorage.getState());
-
-        Event event = cs.convert(updateEventDto, Event.class);
-        event.setId(userId);
-        event.setCategory(eventInStorage.getCategory());
-        event.setConfirmedRequests(eventInStorage.getConfirmedRequests());
-        event.setCreatedOn(eventInStorage.getCreatedOn());
-        event.setPublishedOn(eventInStorage.getPublishedOn());
-        event.setState(eventInStorage.getState());
-        event.setViews(eventInStorage.getViews());
-        event.setInitiator(eventInStorage.getInitiator());
-        event.setLocation(eventInStorage.getLocation());
-
-        if (ObjectUtils.isEmpty(updateEventDto.stateAction())) {
-            event.setState(eventInStorage.getState());
-        } else {
+        if (!ObjectUtils.isEmpty(updateEventDto.stateAction())) {
             switch (updateEventDto.stateAction()) {
-                case REJECT_EVENT -> {
-                    checkEventStatePublished(event.getState());
-                    event.setState(State.CANCELED);
-                }
+                case CANCEL_REVIEW -> eventInStorage.setState(State.CANCELED);
 
-                case PUBLISH_EVENT -> {
-                    checkEventStatePublished(event.getState());
-                    event.setPublishedOn(LocalDateTime.now());
-                    event.setState(State.PUBLISHED);
-                }
+                case SEND_TO_REVIEW -> eventInStorage.setState(State.PENDING);
             }
         }
 
-        if (ObjectUtils.isEmpty(event.getTitle())) {
-            event.setTitle(eventInStorage.getTitle());
-        }
-
-        if (ObjectUtils.isEmpty(event.getAnnotation())) {
-            event.setAnnotation(eventInStorage.getAnnotation());
-        }
-
-        if (ObjectUtils.isEmpty(updateEventDto.paid())) {
-            event.setPaid(eventInStorage.isPaid());
-        }
-
-        if (ObjectUtils.isEmpty(event.getDescription())) {
-            event.setDescription(eventInStorage.getDescription());
-        }
-
-        if (ObjectUtils.isEmpty(event.getEventDate())) {
-            event.setEventDate(eventInStorage.getEventDate());
-        }
-
-        return cs.convert(eventStorage.save(event), EventDto.class);
+        return cs.convert(getDifference(eventInStorage, updateEventDto), EventDto.class);
     }
 
     private void addStats(final HttpServletRequest request) {
@@ -361,7 +375,7 @@ public class EventServiceImpl implements EventService {
 
     private Specification<Event> getSpecification(final AdminParameter adminParameter) {
         return Specification.where(checkByUserIds(adminParameter.getUsers()))
-//                .and(checkStates(adminParameter.getStates()))
+                .and(checkStates(adminParameter.getStates()))
                 .and(checkCategories(adminParameter.getCategories()))
                 .and(checkRangeStart(adminParameter.getRangeStart()))
                 .and(checkRangeEnd(adminParameter.getRangeEnd()));
@@ -374,9 +388,9 @@ public class EventServiceImpl implements EventService {
             predicate = predicate.and(event.initiator.id.in(adminParameter.getUsers()));
         }
 
-/*        if (!ObjectUtils.isEmpty(adminParameter.getStates())) {
+        if (!ObjectUtils.isEmpty(adminParameter.getStates())) {
             predicate = predicate.and(event.state.in(adminParameter.getStates()));
-        }*/
+        }
 
         if (!ObjectUtils.isEmpty(adminParameter.getCategories())) {
             predicate = predicate.and(event.category.id.in(adminParameter.getCategories()));

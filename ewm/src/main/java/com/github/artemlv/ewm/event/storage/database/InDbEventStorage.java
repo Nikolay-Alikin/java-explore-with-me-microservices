@@ -11,8 +11,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Repository
@@ -70,6 +72,20 @@ public class InDbEventStorage implements EventStorage {
     }
 
     @Override
+    public Set<Event> findAllById(final Set<Long> events) {
+        final List<Event> eventList = eventRepository.findAllById(events);
+        log.info("Getting all {} : by Ids {}", SIMPLE_NAME, eventList);
+        return new HashSet<>(eventList);
+    }
+
+    @Override
+    public List<Event> findByCategoryId(long id) {
+        final List<Event> events = eventRepository.findByCategoryId(id);
+        log.info("Getting all {} : by category id {}", SIMPLE_NAME, id);
+        return events;
+    }
+
+    @Override
     public List<Event> findAllByLocationAndRadius(final double lat, final double lon, final double radius) {
         final List<Event> locations = eventRepository.findByLocationLatAndLocationLonAndLocationRadius(lat, lon, radius);
         log.info("Getting a list of events by location coordinates - {}, {}, {}, {}", SIMPLE_NAME, lat, lon, radius);
@@ -82,5 +98,11 @@ public class InDbEventStorage implements EventStorage {
         final Event eventInStorage = eventRepository.save(event);
         log.info("Save {} - {}", SIMPLE_NAME, eventInStorage);
         return eventInStorage;
+    }
+
+    @Override
+    public void saveAll(final List<Event> lists) {
+        log.info("Save All {} - {}", SIMPLE_NAME, lists);
+        eventRepository.saveAll(lists);
     }
 }

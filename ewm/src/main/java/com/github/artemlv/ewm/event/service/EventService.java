@@ -15,7 +15,7 @@ import java.util.List;
 public interface EventService {
     List<EventDto> getAllByAdmin(final AdminParameter adminParameter);
 
-    EventDto updateByIdAdmin(final long eventId, final UpdateEventDto updateEventDto);
+    EventDto updateByAdmin(final long eventId, final UpdateEventDto updateEventDto);
 
     EventDto create(final CreateEventDto createEventDto, final long userId);
 

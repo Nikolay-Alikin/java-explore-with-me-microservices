@@ -9,6 +9,6 @@ import java.util.Objects;
 public class ConstraintFutureInTwoHoursValidation implements ConstraintValidator<ConstraintFutureInTwoHours, LocalDateTime> {
     @Override
     public boolean isValid(LocalDateTime localDateTime, ConstraintValidatorContext constraintValidatorContext) {
-        return Objects.nonNull(localDateTime) && localDateTime.isAfter(LocalDateTime.now().plusHours(2));
+        return Objects.isNull(localDateTime) || localDateTime.isAfter(LocalDateTime.now().plusHours(2));
     }
 }

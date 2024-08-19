@@ -33,6 +33,6 @@ public class AdminEventController {
     public EventDto update(@RequestBody @Valid final UpdateEventDto updateEventDto,
                            @PathVariable @Positive final long eventId) {
         log.info("Request by the administrator to change an {} by id - {} - {}", SIMPLE_NAME, eventId, updateEventDto);
-        return eventService.updateByIdAdmin(eventId, updateEventDto);
+        return eventService.updateByAdmin(eventId, updateEventDto);
     }
 }

@@ -1,9 +1,11 @@
 package com.github.artemlv.ewm.exception;
 
 import com.github.artemlv.ewm.exception.model.ErrorResponse;
+import com.github.artemlv.ewm.exception.type.ConflictDateException;
 import com.github.artemlv.ewm.exception.type.ConflictException;
 import com.github.artemlv.ewm.exception.type.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -50,7 +52,22 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleNotFoundException(final ConflictException e) {
+    public ErrorResponse handleConflictException(final ConflictException e) {
+        final ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT)
+                .reason(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        log.warn(errorResponse.toString(), e);
+
+        return errorResponse;
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDataIntegrityViolationException(final DataIntegrityViolationException e) {
         final ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.CONFLICT)
                 .reason(HttpStatus.CONFLICT.getReasonPhrase())
@@ -66,6 +83,21 @@ public class ErrorHandler {
     @ExceptionHandler({MethodArgumentNotValidException.class, MissingServletRequestParameterException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBindException(final BindException e) {
+        final ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .reason(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        log.warn(errorResponse.toString(), e);
+
+        return errorResponse;
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleConflictDateException(final ConflictDateException e) {
         final ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .reason(HttpStatus.BAD_REQUEST.getReasonPhrase())

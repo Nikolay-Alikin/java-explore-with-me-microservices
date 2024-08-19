@@ -13,7 +13,6 @@ public class UpdateEventDtoToEventConverter implements Converter<UpdateEventDto,
                 .annotation(source.annotation())
                 .description(source.description())
                 .eventDate(source.eventDate())
-                .participantLimit(source.participantLimit())
                 .requestModeration(source.requestModeration())
                 .title(source.title())
                 .build();

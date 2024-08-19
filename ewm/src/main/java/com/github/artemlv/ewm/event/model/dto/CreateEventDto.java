@@ -12,12 +12,12 @@ import org.hibernate.validator.constraints.Length;
 import java.time.LocalDateTime;
 
 public record CreateEventDto(
-        @Length(min = 1, max = 500)
+        @Length(min = 20, max = 2000)
         @NotBlank
         String annotation,
         @Positive
         long category,
-        @Length(min = 1, max = 1500)
+        @Length(min = 20, max = 7000)
         @NotBlank
         String description,
         @NotNull
@@ -29,8 +29,8 @@ public record CreateEventDto(
         boolean paid,
         @PositiveOrZero
         int participantLimit,
-        boolean requestModeration,
-        @Length(min = 1, max = 120)
+        Boolean requestModeration,
+        @Length(min = 3, max = 120)
         @NotBlank
         String title
 ) {

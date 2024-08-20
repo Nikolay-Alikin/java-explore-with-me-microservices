@@ -1,8 +1,9 @@
 package com.github.artemlv.stats.service;
 
+import dto.EndpointHit;
+import dto.ViewStats;
 import org.springframework.http.ResponseEntity;
-import ru.yandex.practicum.generated.model.dto.EndpointHit;
-import ru.yandex.practicum.generated.model.dto.ViewStats;
+
 
 import java.time.LocalDateTime;
 import java.util.List;

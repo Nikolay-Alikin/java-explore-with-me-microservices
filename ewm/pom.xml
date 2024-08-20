@@ -42,6 +42,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>${jeckson-databind-nullable.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
@@ -79,6 +84,12 @@
             <version>2.2.22</version>
         </dependency>
         <dependency>
+            <groupId>ru.practicum</groupId>
+            <artifactId>client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-apt</artifactId>
             <version>${querydsl.version}</version>
@@ -93,6 +104,7 @@
             <version>${querydsl.version}</version>
         </dependency>
 
+
     </dependencies>
 
     <build>
@@ -101,6 +113,74 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+<!--            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi-generator-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-main-service</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>
+                                ${project.basedir}/openapi/ewm-main-service-spec.yml
+                            </inputSpec>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>ru.yandex.practicum.generated.api</apiPackage>
+                            <modelPackage>ru.yandex.practicum.generated.model.dto</modelPackage>
+                            <generateApis>true</generateApis>
+                            <generateModels>true</generateModels>
+                            <modelNameSuffix>DTO</modelNameSuffix>
+                            <configOptions>
+                                <interfaceOnly>true</interfaceOnly>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <serializableModel>true</serializableModel>
+                                <generatePom>false</generatePom>
+                            </configOptions>
+                            <typeMappings>
+                                <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+                            </importMappings>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-stats-service</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>
+                                ${project.basedir}/openapi/integration/ewm-stats-service-spec.yml
+                            </inputSpec>
+                            <generatorName>spring</generatorName>
+                            <library>spring-cloud</library>
+                            <apiPackage>ru.yandex.practicum.generated.integration.stats.api</apiPackage>
+                            <modelPackage>ru.yandex.practicum.generated.integration.stats.model.dto</modelPackage>
+                            <generateApis>true</generateApis>
+                            <generateModels>true</generateModels>
+                            <modelNameSuffix>DTO</modelNameSuffix>
+                            <configOptions>
+                                <interfaceOnly>true</interfaceOnly>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <serializableModel>true</serializableModel>
+                                <generatePom>false</generatePom>
+                            </configOptions>
+                            <typeMappings>
+                                <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+                            </importMappings>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

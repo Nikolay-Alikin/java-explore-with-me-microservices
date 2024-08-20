@@ -2,13 +2,13 @@ package com.github.artemlv.stats.service.impl;
 
 import com.github.artemlv.stats.repository.StatRepository;
 import com.github.artemlv.stats.service.StatService;
+import dto.EndpointHit;
+import dto.ViewStats;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.generated.model.dto.EndpointHit;
-import ru.yandex.practicum.generated.model.dto.ViewStats;
 
 import java.time.LocalDateTime;
 import java.util.List;

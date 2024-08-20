@@ -3,6 +3,8 @@ package com.github.artemlv.stats.controller;
 import com.github.artemlv.stats.controller.api.HitApi;
 import com.github.artemlv.stats.controller.api.StatsApi;
 import com.github.artemlv.stats.service.StatService;
+import dto.EndpointHit;
+import dto.ViewStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

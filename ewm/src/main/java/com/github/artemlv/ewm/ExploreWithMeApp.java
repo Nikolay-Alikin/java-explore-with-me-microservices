@@ -10,5 +10,7 @@ public class ExploreWithMeApp {
 
     public static void main(String[] args) {
         SpringApplication.run(ExploreWithMeApp.class);
+
+
     }
 }

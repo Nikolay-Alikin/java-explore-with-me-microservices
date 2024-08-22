@@ -28,7 +28,7 @@ public interface EventStorage {
 
     List<Event> findAll(final Specification<Event> spec, final PageRequest pageRequest);
 
-    Set<Event> findAllById(Set<Long> events);
+    List<Event> findAllById(Set<Long> events);
 
     List<Event> findByCategoryId(final long id);
 

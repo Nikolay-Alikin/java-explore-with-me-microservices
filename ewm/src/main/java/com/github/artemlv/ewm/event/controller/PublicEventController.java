@@ -24,10 +24,10 @@ public class PublicEventController {
     private static final String SIMPLE_NAME = Event.class.getSimpleName();
     private final EventService eventService;
 
-    @GetMapping("/{eventId}")
-    public EventDto getById(@PathVariable @Positive final long eventId, final HttpServletRequest request) {
-        log.info("Public event {} by id - {}", SIMPLE_NAME, eventId);
-        return eventService.getById(eventId, request);
+    @GetMapping("/{id}")
+    public EventDto getById(@PathVariable @Positive final long id, final HttpServletRequest request) {
+        log.info("Public event {} by id - {}", SIMPLE_NAME, id);
+        return eventService.getById(id, request);
     }
 
     @GetMapping

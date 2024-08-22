@@ -40,27 +40,22 @@ public class RequestServiceImpl implements RequestService {
                     .formatted(SIMPLE_NAME, userId, eventId));
         }
 
+//        if (ObjectUtils.isEmpty(event.getPublishedOn())) {
+//            throw new ConflictException("Cannot add a request to an unpublished eventId: %d".formatted(eventId));
         if (event.getState() != State.PUBLISHED) {
-            throw new ConflictException("Cannot add a request to an unpublished eventId: %d".formatted(eventId));
-        } else if (event.getParticipantLimit() != 0 &&
-                requestStorage.countByEventIdAndStatus(event.getId(), State.CONFIRMED) >= event.getParticipantLimit()) {
-            throw new ConflictException("Event participation limit exceeded eventId: %d".formatted(eventId));
+            throw new ConflictException("Cannot add a request to an unpublished eventId: %d" .formatted(eventId));
+        } else if (event.getParticipantLimit() != 0
+                && requestStorage.countByEventIdAndStatus(event.getId(), State.CONFIRMED) >= event.getParticipantLimit()) {
+            throw new ConflictException("Event participation limit exceeded eventId: %d" .formatted(eventId));
         }
 
         Request request = Request.builder()
                 .created(LocalDateTime.now())
                 .event(event)
                 .requester(user)
-                .status(event.getParticipantLimit() == 0 || event.isRequestModeration() ? State.PUBLISHED
-                        : State.CONFIRMED)
+                .status(event.getParticipantLimit() == 0 || !event.isRequestModeration() ? State.CONFIRMED
+                        : State.PENDING)
                 .build();
-
-//        Request request = Request.builder()
-//                .created(LocalDateTime.now())
-//                .event(event)
-//                .requester(user)
-//                .status(State.PENDING)
-//                .build();
 
         if (request.getStatus() == State.CONFIRMED) {
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
@@ -79,13 +74,13 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public RequestDto cancel(final long userId, final long requestId) {
-        userStorage.getByIdOrElseThrow(userId);
+        userStorage.existsByIdOrElseThrow(userId);
         Request request = requestStorage.getByIdOrElseThrow(requestId);
 
-        if (request.getRequester().getId() == userId) {
-            throw new ConflictException("%s : can`t cancel participation request: %d eventId: %d"
-                    .formatted(SIMPLE_NAME, userId, requestId));
-        }
+//        if (request.getRequester().getId() == userId) {
+//            throw new ConflictException("%s : can`t cancel participation request: %d eventId: %d"
+//                    .formatted(SIMPLE_NAME, userId, requestId));
+//        }
 
         if (request.getStatus() == State.CONFIRMED) {
             Event event = request.getEvent();

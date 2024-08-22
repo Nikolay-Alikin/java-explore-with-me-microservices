@@ -8,8 +8,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -22,9 +21,9 @@ public class CompilationToCompilationDtoConverter implements Converter<Compilati
                 .id(source.getId())
                 .title(source.getTitle())
                 .pinned(source.isPinned())
-                .events(ObjectUtils.isEmpty(source.getEvents()) ? Set.of() : source.getEvents().stream()
+                .events(ObjectUtils.isEmpty(source.getEvents()) ? List.of() : source.getEvents().stream()
                         .map(eventToEventDtoConverter::convert)
-                        .collect(Collectors.toSet()))
+                        .toList())
                 .build();
     }
 }

@@ -8,6 +8,7 @@ import com.github.artemlv.ewm.compilation.model.dto.UpdateCompilationDto;
 import com.github.artemlv.ewm.compilation.storage.CompilationStorage;
 import com.github.artemlv.ewm.event.model.Event;
 import com.github.artemlv.ewm.event.storage.EventStorage;
+import com.github.artemlv.ewm.exception.type.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -33,7 +33,12 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation compilation = cs.convert(createCompilationDto, Compilation.class);
 
         if (!ObjectUtils.isEmpty(createCompilationDto.events())) {
-            final Set<Event> events = eventStorage.findAllById(createCompilationDto.events());
+            final List<Event> events = eventStorage.findAllById(createCompilationDto.events());
+
+            if (events.size() != createCompilationDto.events().size()) {
+                throw new NotFoundException("the number of events found does not correspond to the requirements");
+            }
+
             compilation.setEvents(events);
         }
 
@@ -43,24 +48,23 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto update(final UpdateCompilationDto updateCompilationDto, final long compId) {
         Compilation compilationInStorage = compilationStorage.getByIdOrElseThrow(compId);
-        Compilation compilation = cs.convert(updateCompilationDto, Compilation.class);
 
         if (ObjectUtils.isEmpty(updateCompilationDto.pinned())) {
-            compilation.setPinned(compilationInStorage.isPinned());
+            compilationInStorage.setPinned(compilationInStorage.isPinned());
         }
 
         if (ObjectUtils.isEmpty(updateCompilationDto.title())) {
-            compilation.setTitle(compilationInStorage.getTitle());
+            compilationInStorage.setTitle(compilationInStorage.getTitle());
         }
 
         if (!ObjectUtils.isEmpty(updateCompilationDto.events())) {
-            final Set<Event> events = eventStorage.findAllById(updateCompilationDto.events());
-            compilation.setEvents(events);
+            final List<Event> events = eventStorage.findAllById(updateCompilationDto.events());
+            compilationInStorage.setEvents(events);
         }
 
-        log.info("Update compilation - {}", compilation);
+        log.info("Update compilation - {}", compilationInStorage);
 
-        return cs.convert(compilationStorage.save(compilation), CompilationDto.class);
+        return cs.convert(compilationStorage.save(compilationInStorage), CompilationDto.class);
     }
 
     @Override

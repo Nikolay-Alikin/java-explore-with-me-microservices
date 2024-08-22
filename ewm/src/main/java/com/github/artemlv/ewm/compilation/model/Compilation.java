@@ -4,7 +4,7 @@ import com.github.artemlv.ewm.event.model.Event;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -23,7 +23,7 @@ public class Compilation {
     @Column(nullable = false)
     private boolean pinned;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 50)
     @EqualsAndHashCode.Include
     private String title;
 
@@ -31,5 +31,5 @@ public class Compilation {
     @JoinTable(name = "compilations_events",
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
-    private Set<Event> events;
+    private List<Event> events;
 }

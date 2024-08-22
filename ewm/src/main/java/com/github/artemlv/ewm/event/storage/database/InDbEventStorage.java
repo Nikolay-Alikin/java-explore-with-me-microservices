@@ -11,7 +11,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -72,10 +71,10 @@ public class InDbEventStorage implements EventStorage {
     }
 
     @Override
-    public Set<Event> findAllById(final Set<Long> events) {
-        final List<Event> eventList = eventRepository.findAllById(events);
-        log.info("Getting all {} : by Ids {}", SIMPLE_NAME, eventList);
-        return new HashSet<>(eventList);
+    public List<Event> findAllById(final Set<Long> events) {
+        final List<Event> eventsInStorage = eventRepository.findAllById(events);
+        log.info("Getting all {} : by Ids {}", SIMPLE_NAME, eventsInStorage);
+        return eventsInStorage;
     }
 
     @Override

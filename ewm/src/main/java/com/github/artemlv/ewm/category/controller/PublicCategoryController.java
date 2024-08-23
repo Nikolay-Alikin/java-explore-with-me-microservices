@@ -18,21 +18,20 @@ import java.util.List;
 @RequestMapping("/categories")
 @RequiredArgsConstructor
 public class PublicCategoryController {
-    private final CategoryService categoryService;
     private static final String SIMPLE_NAME = Category.class.getSimpleName();
+    private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryDto> getCategories(@RequestParam(defaultValue = "0") @PositiveOrZero final int from,
-                                           @RequestParam(defaultValue = "10") @Positive final int size) {
-        log.debug("Request for all {} beginning - {} size - {}", SIMPLE_NAME, from, size);
+    public List<CategoryDto> getAll(@RequestParam(defaultValue = "0") @PositiveOrZero final int from,
+                                    @RequestParam(defaultValue = "10") @Positive final int size) {
+        log.info("Request for all {} beginning - {} size - {}", SIMPLE_NAME, from, size);
 
         return categoryService.getAll(from, size);
     }
 
-    @GetMapping
-    @RequestMapping("/{catId}")
-    public CategoryDto getCategoryById(@PathVariable @Positive long catId) {
-        log.debug("Request to get a {} by id - {}", SIMPLE_NAME, catId);
+    @GetMapping("/{catId}")
+    public CategoryDto getById(@PathVariable @Positive long catId) {
+        log.info("Request to get a {} by id - {}", SIMPLE_NAME, catId);
 
         return categoryService.getById(catId);
     }

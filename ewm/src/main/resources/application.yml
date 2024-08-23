@@ -2,13 +2,9 @@ server:
   port: 8080
 
 spring:
-  cloud:
-    openfeign:
-      okhttp:
-        enabled: true
   sql:
     init:
-      mode: embedded
+      mode: always
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${POSTGRES_USER}
@@ -16,8 +12,10 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     show-sql: true
 
-stats:
-  url: ${host:http://localhost:9090}
+stats-server:
+  url: ${STATS_SERVICE_URL:http://localhost:9090}
+  hit: "/hit"
+  stats: "/stats"

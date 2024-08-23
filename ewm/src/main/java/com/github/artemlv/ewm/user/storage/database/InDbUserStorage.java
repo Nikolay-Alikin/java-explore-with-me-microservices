@@ -18,14 +18,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class InDbUserStorage implements UserStorage {
-    private final UserRepository userRepository;
     private static final String SIMPLE_NAME = User.class.getSimpleName();
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public User save(User user) {
         final User userInStorage = userRepository.save(user);
-        log.debug("Save {} - {}", SIMPLE_NAME, userInStorage);
+        log.info("Save {} - {}", SIMPLE_NAME, userInStorage);
         return userInStorage;
     }
 
@@ -33,25 +33,25 @@ public class InDbUserStorage implements UserStorage {
     @Transactional
     public void deleteById(final long id) {
         userRepository.deleteById(id);
-        log.debug("Delete {} by id - {}", SIMPLE_NAME, id);
+        log.info("Delete {} by id - {}", SIMPLE_NAME, id);
     }
 
     @Override
     public List<User> getAll(final List<Long> ids, final int from, final int size) {
-        final PageRequest pageRequest = PageRequest.of(from / size, size);
+        final PageRequest pageRequest = PageRequest.of(from, size);
 
         final List<User> users = ObjectUtils.isEmpty(ids) ? userRepository
                 .findAll(pageRequest)
                 .getContent() : userRepository.findAllByIdIn(ids, pageRequest);
 
-        log.debug("Getting {} from - {} size - {}", SIMPLE_NAME, from, size);
+        log.info("Getting {} from - {} size - {}", SIMPLE_NAME, from, size);
         return users;
     }
 
     @Override
     public Optional<User> getById(final long id) {
         final Optional<User> category = userRepository.findById(id);
-        log.debug("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
+        log.info("Get Optional<{}> by id - {}", SIMPLE_NAME, id);
         return category;
     }
 

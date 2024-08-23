@@ -26,10 +26,12 @@ public class Request {
 
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Event event;
 
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private User requester;
 
     @Column(nullable = false, length = 20)

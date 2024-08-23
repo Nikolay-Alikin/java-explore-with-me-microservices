@@ -1,6 +1,6 @@
 services:
   stats:
-    image: stats:latest
+    image: stats
     build: stats/stats-server
     restart: "no"
     ports:
@@ -15,14 +15,14 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
       - DB_HOST=stats-db
       - DB_PORT=5432
-      - DB_NAME=ewm
+      - DB_NAME=stats
       - POSTGRES_USER=dbuser
       - POSTGRES_PASSWORD=12345
     depends_on:
       - stats-db
 
   stats-db:
-    image: postgres:16.1
+    image: postgres:16.1-alpine
     ports:
       - "5432:5432"
     environment:
@@ -35,11 +35,10 @@ services:
       interval: 5s
       retries: 10
 
-  ewm-service:
+  ewm:
     build: ewm
     ports:
       - "8080:8080"
-    container_name: ewm-service
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
       - DB_HOST=ewm-db
@@ -47,12 +46,13 @@ services:
       - DB_NAME=ewm
       - POSTGRES_USER=dbuser
       - POSTGRES_PASSWORD=12345
+      - STATS_SERVICE_URL=http://stats:9090
     depends_on:
       - ewm-db
 
-
   ewm-db:
-    image: postgres:16.1
+    image: postgres:16.1-alpine
+    container_name: ewm-db
     ports:
       - "5433:5432"
     environment:

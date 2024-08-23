@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS stats (
     app VARCHAR(255) NOT NULL,
     uri VARCHAR(255) NOT NULL,
     ip VARCHAR(45) NOT NULL,
-    date_timestamp timestamp WITHOUT TIME ZONE NOT NULL
+    date_timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

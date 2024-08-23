@@ -12,10 +12,10 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: true
 
 stats-server:
-  url: ${host:http://localhost:9090}
+  url: ${STATS_SERVICE_URL:http://localhost:9090}
   hit: "/hit"
   stats: "/stats"

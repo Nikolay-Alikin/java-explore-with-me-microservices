@@ -44,10 +44,12 @@ public class Event {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+    @ToString.Exclude
     private User initiator;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+    @ToString.Exclude
     private Location location;
 
     @Column(nullable = false)

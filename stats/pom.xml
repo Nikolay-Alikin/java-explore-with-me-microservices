@@ -11,6 +11,7 @@
 
     <groupId>ru.practicum</groupId>
     <artifactId>stats</artifactId>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

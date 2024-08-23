@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class Stat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private long id;
     @Column(nullable = false)
     private String app;

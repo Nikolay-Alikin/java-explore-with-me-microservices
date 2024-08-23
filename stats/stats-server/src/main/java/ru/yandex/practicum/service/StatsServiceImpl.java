@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import ru.yandex.practicum.dto.*;
-import ru.yandex.practicum.mapper.StatsMapper;
 import ru.yandex.practicum.SearchStats;
+import ru.yandex.practicum.dto.CreateStatsDto;
+import ru.yandex.practicum.dto.StatCountHitsDto;
+import ru.yandex.practicum.dto.StatDto;
+import ru.yandex.practicum.dto.StatsResponseHitDto;
+import ru.yandex.practicum.mapper.StatsMapper;
 import ru.yandex.practicum.model.Stat;
 import ru.yandex.practicum.storage.StatsStorage;
 

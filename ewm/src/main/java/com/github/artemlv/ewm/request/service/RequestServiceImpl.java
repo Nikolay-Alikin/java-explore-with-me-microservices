@@ -37,15 +37,15 @@ public class RequestServiceImpl implements RequestService {
         Event event = eventStorage.getByIdOrElseThrow(eventId);
 
         if (event.getInitiator().getId() == user.getId()) {
-            throw new ConflictException("%s : can`t add a request to your own: %d eventId: %d"
-                    .formatted(SIMPLE_NAME, userId, eventId));
+            throw new ConflictException("%s : can`t add a request to your own: %d eventId: %d".formatted(SIMPLE_NAME,
+                    userId, eventId));
         }
 
         if (event.getState() != State.PUBLISHED) {
             throw new ConflictException("Cannot add a request to an unpublished eventId: %d" .formatted(eventId));
         } else if (event.getParticipantLimit() != 0
                 && requestStorage.countByEventIdAndStatus(event.getId(), State.CONFIRMED) >= event.getParticipantLimit()) {
-            throw new ConflictException("Event participation limit exceeded eventId: %d" .formatted(eventId));
+            throw new ConflictException("Event participation limit exceeded eventId: %d".formatted(eventId));
         }
 
         Request request = Request.builder()

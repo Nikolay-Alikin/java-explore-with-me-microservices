@@ -2,6 +2,7 @@ package ru.yandex.practicum.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,15 +16,15 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class StatsClientImpl implements StatsClient {
-    private final String STATS_PATH = "/stats";
-    private final String HIT_PATH = "/hit";
+    private final String statsPath;
+    private final String hitPath;
     private final RestClient restClient;
 
     public List<StatCountHitsDto> get(final SearchStats searchStats) {
         Object[] listObj = restClient.get()
-                .uri(uriBuilder -> uriBuilder.path(STATS_PATH)
+                .uri(uriBuilder -> uriBuilder.path(statsPath)
                         .queryParam("start", searchStats.getStart())
                         .queryParam("end", searchStats.getEnd())
                         .queryParam("uris", searchStats.getUris())
@@ -45,7 +46,7 @@ public class StatsClientImpl implements StatsClient {
     @Override
     public ResponseEntity<Void> save(final CreateStatsDto request) {
         return restClient.post()
-                .uri(HIT_PATH)
+                .uri(hitPath)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()

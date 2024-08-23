@@ -32,6 +32,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public RequestDto create(final long userId, final long eventId) {
+        requestStorage.ifExistsByRequesterIdAndEventIdThenThrow(userId, eventId);
         User user = userStorage.getByIdOrElseThrow(userId);
         Event event = eventStorage.getByIdOrElseThrow(eventId);
 
@@ -40,8 +41,6 @@ public class RequestServiceImpl implements RequestService {
                     .formatted(SIMPLE_NAME, userId, eventId));
         }
 
-//        if (ObjectUtils.isEmpty(event.getPublishedOn())) {
-//            throw new ConflictException("Cannot add a request to an unpublished eventId: %d".formatted(eventId));
         if (event.getState() != State.PUBLISHED) {
             throw new ConflictException("Cannot add a request to an unpublished eventId: %d" .formatted(eventId));
         } else if (event.getParticipantLimit() != 0
@@ -76,11 +75,6 @@ public class RequestServiceImpl implements RequestService {
     public RequestDto cancel(final long userId, final long requestId) {
         userStorage.existsByIdOrElseThrow(userId);
         Request request = requestStorage.getByIdOrElseThrow(requestId);
-
-//        if (request.getRequester().getId() == userId) {
-//            throw new ConflictException("%s : can`t cancel participation request: %d eventId: %d"
-//                    .formatted(SIMPLE_NAME, userId, requestId));
-//        }
 
         if (request.getStatus() == State.CONFIRMED) {
             Event event = request.getEvent();

@@ -12,13 +12,15 @@ spring:
     init:
       mode: embedded
   datasource:
-    url: jdbc:h2:file:./data/ewm
+    url: jdbc:h2:mem:/ewm
     username: sa
     password: password
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     show-sql: true
 stats-server:
   url: http://localhost:9090
+  hit: "/hit"
+  stats: "/stats"

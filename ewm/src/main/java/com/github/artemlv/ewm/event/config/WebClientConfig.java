@@ -11,11 +11,17 @@ import ru.yandex.practicum.client.StatsClientImpl;
 public class WebClientConfig {
     @Value("${stats-server.url}")
     private String baseUrl;
+    @Value("${stats-server.hit}")
+    private String hit;
+    @Value("${stats-server.stats}")
+    private String stats;
 
     @Bean
     public StatsClient statsClient() {
-        return new StatsClientImpl(RestClient.builder()
-                .baseUrl(baseUrl)
-                .build());
+        return new StatsClientImpl(stats, hit,
+                RestClient.builder()
+                        .baseUrl(baseUrl)
+                        .build()
+        );
     }
 }

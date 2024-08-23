@@ -1,6 +1,7 @@
 package com.github.artemlv.ewm.request.storage.database;
 
 
+import com.github.artemlv.ewm.exception.type.ConflictException;
 import com.github.artemlv.ewm.exception.type.NotFoundException;
 import com.github.artemlv.ewm.request.model.Request;
 import com.github.artemlv.ewm.request.storage.RequestStorage;
@@ -82,5 +83,12 @@ public class InDbRequestStorage implements RequestStorage {
         final List<Request> requests = requestRepository.findByEventId(eventId);
         log.info("Getting all by event id {} : {}", SIMPLE_NAME, requests);
         return requests;
+    }
+
+    @Override
+    public void ifExistsByRequesterIdAndEventIdThenThrow(long userId, long eventId) {
+        if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
+            throw new ConflictException(SIMPLE_NAME.formatted(" cannot re-apply for the same event : %d", eventId));
+        }
     }
 }

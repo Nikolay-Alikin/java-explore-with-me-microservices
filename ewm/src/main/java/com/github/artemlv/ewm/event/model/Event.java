@@ -56,13 +56,13 @@ public class Event {
     @Column(nullable = false)
     private int participantLimit;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime publishedOn;
 
     @Column(nullable = false)
     private boolean requestModeration;
 
-    @Column(nullable = false, length =  20)
+    @Column(nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private State state;
 

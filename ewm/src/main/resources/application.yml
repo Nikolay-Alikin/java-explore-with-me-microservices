@@ -17,3 +17,5 @@ spring:
 
 stats-server:
   url: ${host:http://localhost:9090}
+  hit: "/hit"
+  stats: "/stats"

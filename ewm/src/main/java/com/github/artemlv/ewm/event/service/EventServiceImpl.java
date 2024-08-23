@@ -108,7 +108,6 @@ public class EventServiceImpl implements EventService {
             switch (updateEventDto.stateAction()) {
                 case REJECT_EVENT -> {
                     checkEventIsPublished(eventInStorage.getState());
-//                    eventInStorage.setParticipantLimit(0);
                     eventInStorage.setState(State.CANCELED);
                 }
 

@@ -25,4 +25,6 @@ public interface RequestStorage {
     void saveAll(List<Request> requests);
 
     List<Request> findAllByEventId(final long eventId);
+
+    void ifExistsByRequesterIdAndEventIdThenThrow(final long userId, final long eventId);
 }

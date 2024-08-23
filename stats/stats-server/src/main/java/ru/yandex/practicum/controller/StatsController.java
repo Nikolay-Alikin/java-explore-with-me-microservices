@@ -20,8 +20,8 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 public class StatsController {
-    public final String STATS_PATH = "/stats";
-    public final String HIT_PATH = "/hit";
+    public static final String STATS_PATH = "/stats";
+    public static final String HIT_PATH = "/hit";
     private final StatsService statsService;
 
     @PostMapping(HIT_PATH)

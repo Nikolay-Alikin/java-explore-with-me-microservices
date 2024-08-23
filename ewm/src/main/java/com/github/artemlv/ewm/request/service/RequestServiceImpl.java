@@ -42,7 +42,7 @@ public class RequestServiceImpl implements RequestService {
         }
 
         if (event.getState() != State.PUBLISHED) {
-            throw new ConflictException("Cannot add a request to an unpublished eventId: %d" .formatted(eventId));
+            throw new ConflictException("Cannot add a request to an unpublished eventId: %d".formatted(eventId));
         } else if (event.getParticipantLimit() != 0
                 && requestStorage.countByEventIdAndStatus(event.getId(), State.CONFIRMED) >= event.getParticipantLimit()) {
             throw new ConflictException("Event participation limit exceeded eventId: %d".formatted(eventId));

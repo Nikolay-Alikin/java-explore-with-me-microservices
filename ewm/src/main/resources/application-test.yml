@@ -10,7 +10,7 @@ spring:
       enabled: true
   sql:
     init:
-      mode: embedded
+      mode: always
   datasource:
     url: jdbc:h2:mem:/ewm
     username: sa
@@ -18,7 +18,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     show-sql: true
 stats-server:
   url: http://localhost:9090

@@ -3,11 +3,9 @@ package com.github.artemlv.ewm.category.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Data
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

@@ -6,11 +6,9 @@ import lombok.*;
 
 import java.util.List;
 
+@Data
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

@@ -2,9 +2,12 @@ server:
   port: 9090
 
 spring:
+  config:
+    activate:
+      on-profile: dev
   sql:
     init:
-      mode: always
+      mode: ALWAYS
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${POSTGRES_USER}
@@ -12,5 +15,5 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     show-sql: true

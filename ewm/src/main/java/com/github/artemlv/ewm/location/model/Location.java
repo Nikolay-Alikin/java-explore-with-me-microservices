@@ -3,11 +3,9 @@ package com.github.artemlv.ewm.location.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Data
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -27,6 +25,6 @@ public class Location {
     @Column(nullable = false)
     private double radius;
 
-    @Column
+    @Column(unique = true, nullable = false)
     private String name;
 }

@@ -9,11 +9,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Data
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

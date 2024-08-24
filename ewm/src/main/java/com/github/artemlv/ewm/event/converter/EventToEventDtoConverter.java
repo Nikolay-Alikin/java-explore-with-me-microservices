@@ -4,7 +4,6 @@ import com.github.artemlv.ewm.category.converter.CategoryToCategoryDto;
 import com.github.artemlv.ewm.event.model.Event;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
 import com.github.artemlv.ewm.location.converter.LocationToLocationDtoConverter;
-import com.github.artemlv.ewm.location.converter.LocationToLocationLatAndLonDtoConverter;
 import com.github.artemlv.ewm.user.converter.UserToUserWithoutEmailDtoConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;

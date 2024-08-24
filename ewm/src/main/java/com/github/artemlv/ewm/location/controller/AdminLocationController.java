@@ -38,7 +38,7 @@ public class AdminLocationController {
 
     @PatchMapping("/{locId}")
     public LocationDto update(@RequestBody final UpdateLocationDto updateLocationDto,
-                                      @PathVariable @Positive final long locId) {
+                              @PathVariable @Positive final long locId) {
         log.info("Request to update {} by id - {} - {}", SIMPLE_NAME, locId, updateLocationDto);
         return locationService.updateById(locId, updateLocationDto);
     }

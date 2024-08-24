@@ -39,7 +39,6 @@ import ru.yandex.practicum.dto.StatCountHitsDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.github.artemlv.ewm.event.model.QEvent.event;
 

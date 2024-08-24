@@ -2,7 +2,6 @@ package com.github.artemlv.ewm.location.model.dto;
 
 import com.github.artemlv.ewm.location.validation.ConstraintNotZero;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;

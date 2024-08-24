@@ -47,11 +47,11 @@ public class LocationServiceImpl implements LocationService {
     public LocationDto updateById(final long id, final UpdateLocationDto updateLocationDto) {
         Location location = locationStorage.findByIdOrElseThrow(id);
 
-        if (updateLocationDto.lat() > 0) {
+        if (updateLocationDto.lat() != 0) {
             location.setLat(updateLocationDto.lat());
         }
 
-        if (updateLocationDto.lon() > 0) {
+        if (updateLocationDto.lon() != 0) {
             location.setLon(updateLocationDto.lon());
         }
 

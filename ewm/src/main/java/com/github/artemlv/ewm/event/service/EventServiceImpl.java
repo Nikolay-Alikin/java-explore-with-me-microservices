@@ -283,13 +283,17 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDto> getAllByLocation(final Double lat, final Double lon, final Double radius) {
+    public List<EventDto> getAllByLocation(final double lat, final double lon, final double radius) {
         List<Event> events;
 
-        if (Objects.nonNull(radius)) {
+        if (radius > 0) {
             events = eventStorage.findAllByLocationAndRadius(lat, lon, radius);
         } else {
             events = eventStorage.findAllEventsByLocation(lat, lon);
+        }
+
+        if (ObjectUtils.isEmpty(events)) {
+            return List.of();
         }
 
         return events.stream()

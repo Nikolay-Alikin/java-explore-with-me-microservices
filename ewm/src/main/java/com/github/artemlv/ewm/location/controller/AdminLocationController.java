@@ -25,19 +25,19 @@ public class AdminLocationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LocationDto createLocation(@RequestBody @Valid CreateLocationDto createLocationDto) {
+    public LocationDto create(@RequestBody @Valid final CreateLocationDto createLocationDto) {
         log.info("Request to create a {} - {}", SIMPLE_NAME, createLocationDto);
         return locationService.create(createLocationDto);
     }
 
     @GetMapping("/{locId}")
-    public LocationDto getLocationById(@PathVariable @Positive final long locId) {
+    public LocationDto getById(@PathVariable @Positive final long locId) {
         log.info("Request to obtain a {} by id - {}", SIMPLE_NAME, locId);
         return locationService.getById(locId);
     }
 
     @PatchMapping("/{locId}")
-    public LocationDto updateLocation(@RequestBody final UpdateLocationDto updateLocationDto,
+    public LocationDto update(@RequestBody final UpdateLocationDto updateLocationDto,
                                       @PathVariable @Positive final long locId) {
         log.info("Request to update {} by id - {} - {}", SIMPLE_NAME, locId, updateLocationDto);
         return locationService.updateById(locId, updateLocationDto);
@@ -45,7 +45,7 @@ public class AdminLocationController {
 
     @DeleteMapping("/{locId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteLocationById(@PathVariable final long locId) {
+    public void deleteById(@PathVariable final long locId) {
         log.info("Request to delete a {} by id - {}", SIMPLE_NAME, locId);
         locationService.deleteById(locId);
     }

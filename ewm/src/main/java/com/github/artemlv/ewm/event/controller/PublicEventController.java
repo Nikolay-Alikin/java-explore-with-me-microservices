@@ -4,10 +4,12 @@ import com.github.artemlv.ewm.event.model.Event;
 import com.github.artemlv.ewm.event.model.PublicParameter;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
 import com.github.artemlv.ewm.event.service.EventService;
+import com.github.artemlv.ewm.location.validation.ConstraintNotZero;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -38,9 +40,10 @@ public class PublicEventController {
     }
 
     @GetMapping("/locations")
-    public List<EventDto> getEventsByLatAndLon(@RequestParam @NotNull final Double lat,
-                                               @RequestParam @NotNull final Double lon,
-                                               @RequestParam(required = false) final Double radius) {
+    public List<EventDto> getEventsByLatAndLon(@RequestParam @ConstraintNotZero final Double lat,
+                                               @RequestParam @ConstraintNotZero final Double lon,
+                                               @RequestParam(required = false, defaultValue = "0")
+                                                   @PositiveOrZero final double radius) {
         log.info("Public {} to receive events by location and radius - {} - {} - {}", SIMPLE_NAME, lat, lon, radius);
         return eventService.getAllByLocation(lat, lon, radius);
     }

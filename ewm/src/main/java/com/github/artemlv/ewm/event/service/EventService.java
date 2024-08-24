@@ -33,7 +33,7 @@ public interface EventService {
 
     List<EventDto> getAll(final PublicParameter publicParameter, final HttpServletRequest request);
 
-    List<EventDto> getAllByLocation(final Double lat, final Double lon, final Double radius);
+    List<EventDto> getAllByLocation(final double lat, final double lon, final double radius);
 
     EventDto updateByUser(final long userId, final long eventId, final UpdateEventDto updateEventDto);
 }

@@ -1,4 +1,4 @@
-package com.github.artemlv.ewm.event.validation;
+package com.github.artemlv.ewm.location.validation;
 
 
 import jakarta.validation.Constraint;
@@ -9,13 +9,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.FIELD})
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(
-        validatedBy = {ConstraintPositiveOrZeroValidation.class}
+        validatedBy = {ConstraintNotZeroValidation.class}
 )
-public @interface ConstraintPositiveOrZero {
-    String message() default "The number must be equal to or greater than zero";
+public @interface ConstraintNotZero {
+    String message() default "The number must be not zero or null";
 
     Class<?>[] groups() default {};
 

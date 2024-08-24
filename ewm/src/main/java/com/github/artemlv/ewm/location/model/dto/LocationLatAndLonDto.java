@@ -5,9 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record LocationLatAndLonDto(
-        @Positive
         double lat,
-        @Positive
         double lon
 ) {
 }

@@ -23,7 +23,7 @@ public class PublicLocationController {
     private final LocationService locationService;
 
     @GetMapping
-    public List<LocationDto> getLocations(@RequestParam(required = false) final String text,
+    public List<LocationDto> getAll(@RequestParam(required = false, defaultValue = "") final String text,
                                           @RequestParam(defaultValue = "0") final int from,
                                           @RequestParam(defaultValue = "10") final int size) {
         log.info("Public {} for all locations by text - {} beginning - {} size - {}", SIMPLE_NAME, text, from, size);

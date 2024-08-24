@@ -3,6 +3,7 @@ package com.github.artemlv.ewm.event.converter;
 import com.github.artemlv.ewm.category.converter.CategoryToCategoryDto;
 import com.github.artemlv.ewm.event.model.Event;
 import com.github.artemlv.ewm.event.model.dto.EventDto;
+import com.github.artemlv.ewm.location.converter.LocationToLocationDtoConverter;
 import com.github.artemlv.ewm.location.converter.LocationToLocationLatAndLonDtoConverter;
 import com.github.artemlv.ewm.user.converter.UserToUserWithoutEmailDtoConverter;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EventToEventDtoConverter implements Converter<Event, EventDto> {
     private final UserToUserWithoutEmailDtoConverter userWithoutEmailDtoConverter;
-    private final LocationToLocationLatAndLonDtoConverter locationDtoConverter;
+    private final LocationToLocationDtoConverter locationDtoConverter;
     private final CategoryToCategoryDto categoryDtoConverter;
 
     @Override

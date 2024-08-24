@@ -1,19 +1,21 @@
 package com.github.artemlv.ewm.location.model.dto;
 
+import com.github.artemlv.ewm.location.validation.ConstraintNotZero;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
-import org.hibernate.validator.constraints.Length;
 
 @Builder
 public record CreateLocationDto(
-        @Positive
-        double lat,
-        @Positive
-        double lon,
-        @Positive
+        @ConstraintNotZero
+        Double lat,
+        @ConstraintNotZero
+        Double lon,
+        @PositiveOrZero
         double radius,
-        @Length(min = 1, max = 255)
+        @Size(max = 255)
         @NotBlank
         String name
 ) {

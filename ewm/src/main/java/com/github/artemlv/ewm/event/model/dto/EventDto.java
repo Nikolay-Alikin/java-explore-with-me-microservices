@@ -2,6 +2,7 @@ package com.github.artemlv.ewm.event.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.artemlv.ewm.category.model.dto.CategoryDto;
+import com.github.artemlv.ewm.location.model.dto.LocationDto;
 import com.github.artemlv.ewm.location.model.dto.LocationLatAndLonDto;
 import com.github.artemlv.ewm.state.State;
 import com.github.artemlv.ewm.user.model.dto.UserWithoutEmailDto;
@@ -21,7 +22,7 @@ public record EventDto(
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime eventDate,
         UserWithoutEmailDto initiator,
-        LocationLatAndLonDto location,
+        LocationDto location,
         boolean paid,
         int participantLimit,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

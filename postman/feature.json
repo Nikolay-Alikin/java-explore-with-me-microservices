@@ -913,7 +913,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/events/locations?lat=62.026413&lon=129.733454&radius=1",
+					"raw": "{{baseUrl}}/events/locations?lat=55.753544&lon=37.621202&radius=1",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -924,11 +924,11 @@
 					"query": [
 						{
 							"key": "lat",
-							"value": "62.026413"
+							"value": "55.753544"
 						},
 						{
 							"key": "lon",
-							"value": "129.733454"
+							"value": "37.621202"
 						},
 						{
 							"key": "radius",
@@ -966,7 +966,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/events/locations?lat=62.026413&lon=129.733454",
+					"raw": "{{baseUrl}}/events/locations?lat=55.753544&lon=37.621202",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -977,11 +977,11 @@
 					"query": [
 						{
 							"key": "lat",
-							"value": "62.026413"
+							"value": "55.753544"
 						},
 						{
 							"key": "lon",
-							"value": "129.733454"
+							"value": "37.621202"
 						},
 						{
 							"key": "radius",

@@ -1,19 +1,27 @@
 server:
-  port: 9090
+  port: 0
 
 spring:
+  application:
+    name: stats
   config:
     activate:
       on-profile: dev
+
   sql:
     init:
       mode: ALWAYS
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5555/stats}
+    username: ${POSTGRES_USER:admin}
+    password: ${POSTGRES_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: none
     show-sql: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

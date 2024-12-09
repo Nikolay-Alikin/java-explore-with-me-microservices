@@ -26,6 +26,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -47,6 +49,7 @@ import static com.github.artemlv.ewm.event.model.QEvent.event;
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
+
     private static final String SIMPLE_NAME = Event.class.getSimpleName();
     @Qualifier("mvcConversionService")
     private final ConversionService cs;
@@ -112,11 +115,12 @@ public class EventServiceImpl implements EventService {
 
                 case PUBLISH_EVENT -> {
                     if (eventInStorage.getState() != State.PENDING) {
-                        throw new ConflictException("An event can only be published if it is in a pending publication state");
+                        throw new ConflictException(
+                                "An event can only be published if it is in a pending publication state");
                     }
                     if (LocalDateTime.now().plusHours(1).isAfter(eventInStorage.getEventDate())) {
                         throw new ConflictException("The start date of the event being modified must be no earlier "
-                                + "than an hour before from date of publication");
+                                                    + "than an hour before from date of publication");
                     }
 
                     eventInStorage.setState(State.PUBLISHED);
@@ -179,7 +183,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public RequestStatusUpdateResultDto updateRequestsStatusByUserIdAndEventId(final long userId, final long eventId,
-                                                                               UpdateRequestByIdsDto update) {
+            UpdateRequestByIdsDto update) {
         List<Request> requests = requestStorage.findAllByIdInAndEventId(update.requestIds(), eventId);
 
         if (ObjectUtils.isEmpty(requests)) {
@@ -263,7 +267,8 @@ public class EventServiceImpl implements EventService {
             predicate = predicate.and(event.paid.eq(publicParameter.getPaid()));
         }
 
-        predicate = predicate.and(event.createdOn.between(publicParameter.getRangeStart(), publicParameter.getRangeEnd()));
+        predicate = predicate.and(
+                event.createdOn.between(publicParameter.getRangeStart(), publicParameter.getRangeEnd()));
 
         addStats(request);
 
@@ -272,7 +277,8 @@ public class EventServiceImpl implements EventService {
                         publicParameter.getSize())
         );
 
-        lists.forEach(event -> updateStats(event, publicParameter.getRangeStart(), publicParameter.getRangeEnd(), false));
+        lists.forEach(
+                event -> updateStats(event, publicParameter.getRangeStart(), publicParameter.getRangeEnd(), false));
 
         eventStorage.saveAll(lists);
 
@@ -356,7 +362,7 @@ public class EventServiceImpl implements EventService {
     private void checkIfTheUserIsTheEventCreator(final long userId, final long eventId) {
         if (userId == eventId) {
             throw new ConflictException(String.format("Event originator userId: %d cannot add a membership request " +
-                    "in its event eventId: %d", userId, eventId));
+                                                      "in its event eventId: %d", userId, eventId));
         }
     }
 
@@ -373,9 +379,9 @@ public class EventServiceImpl implements EventService {
     private Specification<Event> checkStates(final List<State> states) {
         return ObjectUtils.isEmpty(states) ? null
                 : ((root, query, criteriaBuilder) -> root.get("state").as(String.class).in(states.stream()
-                .map(Enum::toString)
-                .toList())
-        );
+                        .map(Enum::toString)
+                        .toList())
+                );
     }
 
     private Specification<Event> checkRangeStart(final LocalDateTime start) {
@@ -412,7 +418,8 @@ public class EventServiceImpl implements EventService {
             predicate = predicate.and(event.category.id.in(adminParameter.getCategories()));
         }
 
-        predicate = predicate.and(event.createdOn.between(adminParameter.getRangeStart(), adminParameter.getRangeEnd()));
+        predicate = predicate.and(
+                event.createdOn.between(adminParameter.getRangeStart(), adminParameter.getRangeEnd()));
 
         return predicate;
     }

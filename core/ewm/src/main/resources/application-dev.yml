@@ -1,7 +1,9 @@
 server:
-  port: 8080
+  port: 0
 
 spring:
+  application:
+    name: ewm
   config:
     activate:
       on-profile: dev
@@ -9,9 +11,9 @@ spring:
     init:
       mode: ALWAYS
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5455/ewm}
+    username: ${POSTGRES_USER:admin}
+    password: ${POSTGRES_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -22,3 +24,7 @@ stats-server:
   url: ${STATS_SERVICE_URL:http://localhost:9090}
   hit: "/hit"
   stats: "/stats"
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: stats
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
+      retry:
+        use-random-policy: true
+        max-attempts: 6000

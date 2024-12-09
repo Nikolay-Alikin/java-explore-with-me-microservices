@@ -3,6 +3,7 @@ package com.github.artemlv.ewm.event.config;
 import com.github.artemlv.ewm.exception.type.ConflictException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,4 +38,5 @@ public class WebClientConfig {
                         .build()
         );
     }
+
 }

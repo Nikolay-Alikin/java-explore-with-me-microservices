@@ -1,5 +1,7 @@
 package com.github.artemlv.ewm.event.service;
 
+import static com.github.artemlv.ewm.event.model.QEvent.event;
+
 import com.github.artemlv.ewm.category.model.Category;
 import com.github.artemlv.ewm.category.storage.CategoryStorage;
 import com.github.artemlv.ewm.event.model.AdminParameter;
@@ -23,11 +25,12 @@ import com.github.artemlv.ewm.user.model.User;
 import com.github.artemlv.ewm.user.storage.UserStorage;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,12 +40,6 @@ import ru.yandex.practicum.SearchStats;
 import ru.yandex.practicum.client.StatsClient;
 import ru.yandex.practicum.dto.CreateStatsDto;
 import ru.yandex.practicum.dto.StatCountHitsDto;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.github.artemlv.ewm.event.model.QEvent.event;
 
 
 @Slf4j
@@ -338,7 +335,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private void updateStats(Event event, final LocalDateTime startRange, final LocalDateTime endRange,
-                             final boolean unique) {
+            final boolean unique) {
 
         List<StatCountHitsDto> stats = statsClient.get(SearchStats.builder()
                 .start(startRange)

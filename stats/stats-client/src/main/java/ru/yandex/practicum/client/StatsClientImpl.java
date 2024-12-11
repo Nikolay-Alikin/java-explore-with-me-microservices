@@ -1,7 +1,9 @@
 package ru.yandex.practicum.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import java.util.Arrays;
+import java.util.List;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,19 +13,26 @@ import ru.yandex.practicum.SearchStats;
 import ru.yandex.practicum.dto.CreateStatsDto;
 import ru.yandex.practicum.dto.StatCountHitsDto;
 
-import java.util.Arrays;
-import java.util.List;
-
+@Lazy
 @Service
-@RequiredArgsConstructor
 public class StatsClientImpl implements StatsClient {
-    private final String statsPath;
-    private final String hitPath;
+
+    private static final String HIT_PATH = "/hit";
+    private static final String STATS_PATH = "/stats";
+
     private final RestClient restClient;
+    private final DiscoveryService discoveryService;
+
+    public StatsClientImpl(DiscoveryService discoveryService) {
+        this.discoveryService = discoveryService;
+        this.restClient = RestClient.builder()
+                .baseUrl(discoveryService.getServiceUrl("stats"))
+                .build();
+    }
 
     public List<StatCountHitsDto> get(final SearchStats searchStats) {
         Object[] listObj = restClient.get()
-                .uri(uriBuilder -> uriBuilder.path(statsPath)
+                .uri(uriBuilder -> uriBuilder.path(STATS_PATH)
                         .queryParam("start", searchStats.getStart())
                         .queryParam("end", searchStats.getEnd())
                         .queryParam("uris", searchStats.getUris())
@@ -45,7 +54,7 @@ public class StatsClientImpl implements StatsClient {
     @Override
     public ResponseEntity<Void> save(final CreateStatsDto request) {
         return restClient.post()
-                .uri(hitPath)
+                .uri(HIT_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()

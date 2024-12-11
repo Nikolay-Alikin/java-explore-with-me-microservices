@@ -29,7 +29,7 @@ services:
       timeout: 5s
       interval: 5s
       retries: 10
-      start_period: 40s
+      start_period: 100s
 
   gateway-server:
     build: infra/gateway-server

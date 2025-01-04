@@ -1,66 +1,131 @@
 services:
-  stats:
-    image: stats
+  discovery-server:
+    build: infra/discovery-server
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    networks:
+      - ewm-net
+    healthcheck:
+      test: "wget -T5 -qO- http://localhost:8761/actuator/health | grep UP || exit 1"
+      timeout: 100s
+      interval: 5s
+      retries: 10
+      start_period: 40s
+
+  config-server:
+    build: infra/config-server
+    container_name: config-server
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    networks:
+      - ewm-net
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SERVER_PORT=9091
+    healthcheck:
+      test: "wget -T5 -qO- http://localhost:9091/actuator/health | grep UP || exit 1"
+      timeout: 5s
+      interval: 5s
+      retries: 10
+      start_period: 100s
+
+  gateway-server:
+    build: infra/gateway-server
+    container_name: gateway-server
+    ports:
+      - "8080:8080"
+    depends_on:
+      config-server:
+        condition: service_healthy
+      ewm-service:
+        condition: service_healthy
+      stats-server:
+        condition: service_healthy
+    networks:
+      - ewm-net
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  stats-server:
     build: stats/stats-server
-    restart: "no"
+    container_name: ewm-stats-server
     ports:
       - "9090:9090"
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:9090/actuator/health || exit 1
-      interval: 30s
-      timeout: 5s
-      start_period: 30s
-      retries: 5
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
-      - DB_HOST=stats-db
-      - DB_PORT=5432
-      - DB_NAME=stats
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=12345
     depends_on:
-      - stats-db
+      stats-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - ewm-net
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/ewm-stats
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    healthcheck:
+      test: "wget -T5 -qO- http://localhost:9090/actuator/health | grep UP || exit 1"
+      timeout: 5s
+      interval: 5s
+      retries: 10
+      start_period: 90s
 
   stats-db:
-    image: postgres:16.1-alpine
-    ports:
-      - "5432:5432"
+    image: postgres:16.1
+    container_name: postgres-ewm-stats-db
     environment:
-      - POSTGRES_PASSWORD=12345
-      - POSTGRES_USER=dbuser
-      - POSTGRES_DB=stats
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=ewm-stats
+    networks:
+      - ewm-net
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
       interval: 5s
-      retries: 10
+      retries: 15
 
-  ewm:
-    build: ewm
-    ports:
-      - "8080:8080"
+  ewm-service:
+    build: core/ewm
+    container_name: ewm-main-service
+    depends_on:
+      ewm-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      stats-server:
+        condition: service_healthy
+    networks:
+      - ewm-net
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
-      - DB_HOST=ewm-db
-      - DB_PORT=5432
-      - DB_NAME=ewm
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=12345
-      - STATS_SERVICE_URL=http://stats:9090
-    depends_on:
-      - ewm-db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SERVER_PORT=8081
+    healthcheck:
+      test: "wget -T5 -qO- http://localhost:8081/actuator/health | grep UP || exit 1"
+      timeout: 5s
+      interval: 5s
+      retries: 10
+      start_period: 90s
 
   ewm-db:
-    image: postgres:16.1-alpine
-    container_name: ewm-db
-    ports:
-      - "5433:5432"
+    image: postgres:16.1
+    container_name: postgres-ewm-main-db
+    networks:
+      - ewm-net
     environment:
-      - POSTGRES_PASSWORD=12345
-      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
       - POSTGRES_DB=ewm
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
       interval: 5s
-      retries: 10
+      retries: 15
+
+networks:
+  ewm-net:

@@ -25,6 +25,9 @@ public interface UserClient {
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(defaultValue = "10") @Positive int size);
 
+    @GetMapping("/admin/users/{userId}")
+    UserDto getUserById(@PathVariable long userId);
+
     @DeleteMapping("/admin/users/{userId}")
     void delete(@PathVariable @Positive long userId);
 }

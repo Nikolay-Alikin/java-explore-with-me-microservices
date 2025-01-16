@@ -23,6 +23,9 @@ public interface EventClient {
             @RequestParam(value = "from", required = false, defaultValue = "0") Integer from,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size);
 
+    @GetMapping("events/{id}")
+    EventFullDto getEventByEventId(@PathVariable Long id);
+
     @PatchMapping("/admin/events/{eventId}")
     EventFullDto update(@RequestBody UpdateEventDto updateEventDto,
             @PathVariable("eventId") long eventId);

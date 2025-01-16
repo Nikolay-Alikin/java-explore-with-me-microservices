@@ -1,6 +1,7 @@
 package ru.yandex.practicum.category.service;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,13 +41,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteById(final long id) {
-        boolean isEmpty = eventClient.getAll(null, null, List.of(id), null, null,
-                        null, 0, 1)
-                .isEmpty();
+        Optional.ofNullable(eventClient.getEventByEventId(id))
+                .orElseThrow(() -> new ConflictException("Category with id " + id + " exists in Event"));
 
-        if (isEmpty) {
-            throw new ConflictException("Category with id " + id + " exists in Event");
-        }
         categoryStorage.existsByIdOrElseThrow(id);
         categoryStorage.deleteById(id);
     }

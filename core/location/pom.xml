@@ -12,6 +12,11 @@
     <groupId>ru.yandex.practicum</groupId>
     <artifactId>location</artifactId>
 
+    <properties>
+        <ok.http.version>8.18.0</ok.http.version>
+        <swagger.version>2.2.22</swagger.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -62,7 +67,7 @@
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>2.2.22</version>
+            <version>${swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>com.querydsl</groupId>
@@ -82,14 +87,14 @@
         <dependency>
             <groupId>ru.practicum</groupId>
             <artifactId>stats-client</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>ru.practicum</groupId>
             <artifactId>stats-dto</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -119,7 +124,7 @@
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
             <artifactId>shared</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -134,9 +135,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto create(final CreateEventDto createEventDto, final long userId) {
-        var userDto = userClient.getAll(List.of(userId), 0, 1)
-                .stream()
-                .findFirst()
+        var userDto = Optional.ofNullable(userClient.getUserById(userId))
                 .orElseThrow(() -> new NotFoundException(User.class.getSimpleName(), userId));
 
         var user = cs.convert(userDto, User.class);
@@ -185,7 +184,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventFullDto> getAllByUserId(final long userId, final int from, final int size) {
-        var user = userClient.getAll(List.of(userId), 0, 1).getFirst();
+        var user = userClient.getUserById(userId);
         if (Objects.isNull(user)) {
             throw new NotFoundException(User.class.getSimpleName(), userId);
         }
@@ -195,7 +194,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getByIdAndUserId(final long eventId, final long userId) {
-        var user = userClient.getAll(List.of(userId), 0, 1).getFirst();
+        var user = userClient.getUserById(userId);
         if (Objects.isNull(user)) {
             throw new NotFoundException(User.class.getSimpleName(), userId);
         }

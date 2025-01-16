@@ -12,6 +12,12 @@
     <groupId>ru.yandex.practicum</groupId>
     <artifactId>shared</artifactId>
 
+    <properties>
+        <ok.http.version>8.18.0</ok.http.version>
+        <jakson-databind.version>2.17.2</jakson-databind.version>
+        <querydsl-jpa.version>5.1.0</querydsl-jpa.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -20,7 +26,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.17.2</version>
+            <version>${jakson-databind.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -41,13 +47,13 @@
         <dependency>
             <groupId>com.netflix.feign</groupId>
             <artifactId>feign-okhttp</artifactId>
-            <version>8.18.0</version>
+            <version>${ok.http.version}</version>
         </dependency>
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
             <classifier>jakarta</classifier>
-            <version>5.1.0</version>
+            <version>${querydsl-jpa.version}</version>
         </dependency>
     </dependencies>
 

@@ -32,6 +32,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto getById(Long userId) {
+        var user = userStorage.getByIdOrElseThrow(userId);
+        return cs.convert(user, UserDto.class);
+    }
+
+    @Override
     public void deleteById(final long id) {
         userStorage.existsByIdOrElseThrow(id);
         userStorage.deleteById(id);

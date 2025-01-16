@@ -102,9 +102,7 @@ public class RequestServiceImpl implements RequestService {
                 .orElseThrow(() -> new NotFoundException(Request.class.getSimpleName(), requestId));
 
         if (request.getStatus() == State.CONFIRMED) {
-            var eventDto = eventClient.getAll(null, null, null, List.of(request.getEvent()),
-                            null, null, 0, 1)
-                    .getFirst();
+            var eventDto = eventClient.getEventByEventId(request.getEvent());
 
             var updatedEvent = EventFullDto.builder()
                     .id(eventDto.id())
@@ -155,9 +153,7 @@ public class RequestServiceImpl implements RequestService {
         var requestsToSave = new ArrayList<Request>();
 
         requests.forEach(request -> {
-            var eventDto = eventClient.getAll(null, null, null, List.of(request.getEvent()),
-                            null, null, 0, 1)
-                    .getFirst();
+            var eventDto = eventClient.getEventByEventId(request.getEvent());
 
             if (countConfirmedRequests >= eventDto.participantLimit()) {
                 throw new ConflictException("The limit on applications for this event has been reached");
@@ -208,7 +204,7 @@ public class RequestServiceImpl implements RequestService {
 
 
     private UserDto getUser(long userId) {
-        var user = userClient.getAll(List.of(userId), 0, 1).getFirst();
+        var user = userClient.getUserById(userId);
         if (user == null) {
             throw new NotFoundException(UserDto.class.getSimpleName(), userId);
         }
@@ -216,8 +212,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private EventFullDto getEvent(long eventId) {
-        var event = eventClient.getAll(null, null, null, List.of(eventId), null,
-                null, 0, 1).getFirst();
+        var event = eventClient.getEventByEventId(eventId);
         if (event == null) {
             throw new NotFoundException(EventFullDto.class.getSimpleName(), eventId);
         }

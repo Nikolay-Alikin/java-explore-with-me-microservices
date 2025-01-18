@@ -1,5 +1,7 @@
 package ru.yandex.practicum.controller;
 
+import client.CollectorClient;
+import ru.yandex.practicum.constant.UserActionType;
 import ru.yandex.practicum.request.model.Request;
 import ru.yandex.practicum.request.model.dto.RequestDto;
 import ru.yandex.practicum.request.model.dto.RequestStatusUpdateResultDto;
@@ -23,13 +25,16 @@ public class PrivateUserRequestController {
 
     private static final String SIMPLE_NAME = Request.class.getSimpleName();
     private final RequestService requestService;
+    private final CollectorClient collectorClient;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RequestDto create(@PathVariable @Positive final long userId,
                              @RequestParam @Positive final long eventId) {
         log.info("{} to participate in an event by id - {} by user with id - {}", SIMPLE_NAME, eventId, userId);
-        return requestService.create(userId, eventId);
+        RequestDto requestDto = requestService.create(userId, eventId);
+        collectorClient.sendUserAction(userId, eventId, UserActionType.REGISTER.toString());
+        return requestDto;
     }
 
     @GetMapping

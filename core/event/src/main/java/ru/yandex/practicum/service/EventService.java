@@ -28,4 +28,6 @@ public interface EventService {
     List<EventFullDto> getAllByLocation(final double lat, final double lon, final double radius);
 
     EventFullDto updateByUser(final long userId, final long eventId, final UpdateEventDto updateEventDto);
+
+    void addEventLike(long userId, long eventId);
 }

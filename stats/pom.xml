@@ -15,6 +15,7 @@
         <module>collector</module>
         <module>serialization</module>
         <module>Aggregator</module>
+        <module>analyzer</module>
     </modules>
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

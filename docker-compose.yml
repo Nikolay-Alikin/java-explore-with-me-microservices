@@ -51,6 +51,8 @@ services:
         condition: service_healthy
       user-server:
         condition: service_healthy
+      analyzer-service:
+        condition: service_healthy
     networks:
       - ewm-net
     environment:
@@ -240,6 +242,28 @@ services:
       interval: 15s
       retries: 10
 
+  analyzer-service:
+    build: stats/analyzer
+    container_name: ewm-stats-analyzer
+    depends_on:
+      stats-analyzer-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - ewm-net
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-analyzer-db:5432/ewm-stats-analyzer-db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SERVER_PORT=8085
+    healthcheck:
+      test: "curl --fail --silent localhost:8085/actuator/health | grep UP || exit 1"
+      timeout: 5s
+      interval: 15s
+      retries: 10
+
   stats-db:
     image: postgres:16.1
     container_name: postgres-ewm-stats-db
@@ -355,6 +379,21 @@ services:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
       interval: 5s
+      retries: 15
+
+  stats-analyzer-db:
+    image: postgres:16.1
+    container_name: postgres-ewm-stats-analyzer-db
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=ewm-stats-analyzer-db
+    networks:
+      - ewm-net
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 10s
       retries: 15
 
   kafka:

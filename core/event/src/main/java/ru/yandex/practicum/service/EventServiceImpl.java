@@ -2,6 +2,7 @@ package ru.yandex.practicum.service;
 
 import static ru.yandex.practicum.event.model.QEvent.event;
 
+import client.CollectorClient;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -18,9 +19,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import ru.yandex.practicum.category.client.CategoryClient;
-import ru.yandex.practicum.client.api.StatsClient;
 import ru.yandex.practicum.client.model.EndpointHit;
 import ru.yandex.practicum.client.model.ViewStats;
+import ru.yandex.practicum.constant.UserActionType;
 import ru.yandex.practicum.event.model.AdminParameter;
 import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.event.model.PublicParameter;
@@ -51,8 +52,7 @@ public class EventServiceImpl implements EventService {
     private final UserClient userClient;
     private final CategoryClient categoryClient;
     private final LocationClient locationClient;
-    private final StatsClient statsClient;
-
+    private final CollectorClient collectorClient;
     private final RequestClient requestClient;
 
     @Override
@@ -204,7 +204,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto getById(final long eventId, final HttpServletRequest request) {
+    public EventFullDto getById(final long eventId, final HttpServletRequest request, long userId) {
         Event event = eventStorage.getByIdOrElseThrow(eventId);
 
         if (event.getState() != State.PUBLISHED) {
@@ -214,7 +214,9 @@ public class EventServiceImpl implements EventService {
         addStats(request);
 
         updateStats(event, LocalDateTime.now().minusDays(3), LocalDateTime.now().plusDays(3), true);
-        return cs.convert(eventStorage.save(event), EventFullDto.class);
+        var convert = cs.convert(eventStorage.save(event), EventFullDto.class);
+        collectorClient.sendUserAction(userId, eventId, UserActionType.VIEW.toString());
+        return convert;
     }
 
     @Override
@@ -316,6 +318,14 @@ public class EventServiceImpl implements EventService {
                 .title(eventInStorage.getTitle())
                 .views(eventInStorage.getViews())
                 .build();
+    }
+
+    @Override
+    public void addEventLike(long userId, long eventId) {
+        if (requestClient.getAllRequests(userId).stream().anyMatch(request -> request.event() == eventId)) {
+            collectorClient.sendUserAction(userId, eventId, UserActionType.LIKE.toString());
+        }
+        throw new ConflictException("User does not have permission");
     }
 
     private LocationDto getLocation(double lat, double lon) {

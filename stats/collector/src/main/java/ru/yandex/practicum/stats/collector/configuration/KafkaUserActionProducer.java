@@ -31,14 +31,18 @@ public class KafkaUserActionProducer {
     }
 
     public void sendRecord(ProducerRecord<String, SpecificRecordBase> record) {
-        try (producer) {
-            producer.send(record);
+        try {
+            producer.send(record, (metadata, exception) -> {
+                if (exception != null) {
+                    exception.printStackTrace();
+                } else {
+                    System.out.println(
+                            "Record sent to partition " + metadata.partition() + " with offset " + metadata.offset());
+                }
+            });
             producer.flush();
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
-
 }

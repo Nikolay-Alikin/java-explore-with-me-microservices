@@ -57,6 +57,8 @@ public class GeneralAggregatorService implements AggregatorService {
             log.error("Aggregator. Error by handling userAction from Kafka", e);
         } finally {
             log.info("Aggregator. Closing GeneralAggregatorService");
+            consumer.commitSync();
+            consumer.close();
         }
     }
 
@@ -180,13 +182,9 @@ public class GeneralAggregatorService implements AggregatorService {
                 new ProducerRecord<>(
                         kafkaConfig.getTopics().get("sensors-snapshots"), null, null, similarityAvro);
         log.info("Sending similarityAvro {}", similarityRecord);
-        try (producer) {
-            producer.send(similarityRecord);
-            producer.flush();
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
+        producer.send(similarityRecord);
+        producer.flush();
     }
 }
 

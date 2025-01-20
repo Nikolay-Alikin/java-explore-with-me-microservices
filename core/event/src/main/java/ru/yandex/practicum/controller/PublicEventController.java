@@ -33,14 +33,12 @@ import ru.yandex.practicum.validation.ConstraintNotZero;
 public class PublicEventController {
 
     private final EventService eventService;
-    private final CollectorClient collectorClient;
     private final RecommendationService recommendationService;
 
     @GetMapping("/{id}")
     public EventFullDto getById(@PathVariable @Positive final long id, final HttpServletRequest request,
             @RequestHeader("X-EWM-USER-ID") long userId) {
-        var dto = eventService.getById(id, request);
-        collectorClient.sendUserAction(userId, id, UserActionType.VIEW.toString());
+        var dto = eventService.getById(id, request,userId);
         return dto;
     }
 

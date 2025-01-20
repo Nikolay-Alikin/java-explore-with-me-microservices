@@ -7,11 +7,10 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>Aggregator</artifactId>
+    <artifactId>aggregator</artifactId>
     <packaging>jar</packaging>
 
-    <name>Aggregator</name>
-    <url>http://maven.apache.org</url>
+    <name>aggregator</name>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

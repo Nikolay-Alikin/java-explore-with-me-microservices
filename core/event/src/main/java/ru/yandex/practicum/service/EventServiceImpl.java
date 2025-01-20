@@ -204,7 +204,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto getById(final long eventId, final HttpServletRequest request) {
+    public EventFullDto getById(final long eventId, final HttpServletRequest request, long userId) {
         Event event = eventStorage.getByIdOrElseThrow(eventId);
 
         if (event.getState() != State.PUBLISHED) {
@@ -214,7 +214,9 @@ public class EventServiceImpl implements EventService {
         addStats(request);
 
         updateStats(event, LocalDateTime.now().minusDays(3), LocalDateTime.now().plusDays(3), true);
-        return cs.convert(eventStorage.save(event), EventFullDto.class);
+        var convert = cs.convert(eventStorage.save(event), EventFullDto.class);
+        collectorClient.sendUserAction(userId, eventId, UserActionType.VIEW.toString());
+        return convert;
     }
 
     @Override

@@ -27,7 +27,7 @@ public class UserActionCollector extends UserActionControllerGrpc.UserActionCont
             responseObserver.onCompleted();
         } catch (Exception e) {
             responseObserver.onError(new StatusRuntimeException(
-                    Status.INTERNAL
+                    Status.fromThrowable(e)
                             .withDescription(e.getLocalizedMessage())
                             .withCause(e)
             ));

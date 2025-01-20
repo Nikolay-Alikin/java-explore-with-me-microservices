@@ -21,7 +21,7 @@ public interface EventService {
 
     EventFullDto getByIdAndUserId(final long eventId, final long userId);
 
-    EventFullDto getById(final long eventId, final HttpServletRequest request);
+    EventFullDto getById(final long eventId, final HttpServletRequest request, long userId);
 
     List<EventFullDto> getAll(final PublicParameter publicParameter, final HttpServletRequest request);
 
